@@ -334,7 +334,7 @@ function install_quantum_agent_packages() {
 
 function is_quantum_ovs_base_plugin() {
     local plugin=$1
-    if [[ ",openvswitch,ryu,bigswitch_floodlight" =~ ,${plugin}, ]]; then
+    if [[ ",openvswitch,ryu,bigswitch_floodlight," =~ ,${plugin}, ]]; then
         return 0
     fi
     return 1
