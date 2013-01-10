@@ -35,15 +35,15 @@ CEILOMETER_BRANCH=master
 
 # volume service
 CINDER_REPO=${GIT_BASE}/openstack/cinder
-CINDER_BRANCH=master
+CINDER_BRANCH=0b93217fa75959f9f83b259e38c356a43eb8a720
 
 # volume client
 CINDERCLIENT_REPO=${GIT_BASE}/openstack/python-cinderclient
-CINDERCLIENT_BRANCH=master
+CINDERCLIENT_BRANCH=06acb0c009ac53777884cf5b0aa8942184d06622
 
 # compute service
 NOVA_REPO=${GIT_BASE}/openstack/nova.git
-NOVA_BRANCH=master
+NOVA_BRANCH=dcb79ba1e6e20a8fb07205a4558cb93f3c5d5052
 
 # storage service
 SWIFT_REPO=${GIT_BASE}/openstack/swift.git
@@ -57,27 +57,27 @@ SWIFTCLIENT_BRANCH=master
 
 # image catalog service
 GLANCE_REPO=${GIT_BASE}/openstack/glance.git
-GLANCE_BRANCH=master
+GLANCE_BRANCH=48cf1256a26d4758803fd775533ba7f367c5dafe
 
 # python glance client library
 GLANCECLIENT_REPO=${GIT_BASE}/openstack/python-glanceclient
-GLANCECLIENT_BRANCH=master
+GLANCECLIENT_BRANCH=19d542ef5f570d98e08008898a0ee31a3186d5a9
 
 # unified auth system (manages accounts/tokens)
 KEYSTONE_REPO=${GIT_BASE}/openstack/keystone.git
-KEYSTONE_BRANCH=master
+KEYSTONE_BRANCH=863acc7b6d39de3596e2bf767397774053156f45
 
 # a websockets/html5 or flash powered VNC console for vm instances
 NOVNC_REPO=https://github.com/kanaka/noVNC.git
-NOVNC_BRANCH=master
+NOVNC_BRANCH=49d5cee91e375488a7287b0adb159ffadd99042a
 
 # django powered web control panel for openstack
 HORIZON_REPO=${GIT_BASE}/openstack/horizon.git
-HORIZON_BRANCH=master
+HORIZON_BRANCH=4d2199d8fe97fa05b65a84757c3891f95a4eb7a8
 
 # python client library to nova that horizon (and others) use
 NOVACLIENT_REPO=${GIT_BASE}/openstack/python-novaclient.git
-NOVACLIENT_BRANCH=master
+NOVACLIENT_BRANCH=e31023fee104ff69fd14a01703b8e62aeff088a1
 
 # consolidated openstack python client
 OPENSTACKCLIENT_REPO=${GIT_BASE}/openstack/python-openstackclient.git
@@ -85,7 +85,7 @@ OPENSTACKCLIENT_BRANCH=master
 
 # python keystone client library to nova that horizon uses
 KEYSTONECLIENT_REPO=${GIT_BASE}/openstack/python-keystoneclient
-KEYSTONECLIENT_BRANCH=master
+KEYSTONECLIENT_BRANCH=d37a3fb06cbb284d2bea330b456b774bfe2662f7
 
 # quantum service
 QUANTUM_REPO=${GIT_BASE}/bigswitch/quantum
