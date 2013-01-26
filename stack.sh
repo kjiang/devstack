@@ -794,7 +794,7 @@ if is_service_enabled quantum; then
     if [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
         # Install deps
         # FIXME add to ``files/apts/quantum``, but don't install if not needed!
-        if is_ubuntu; then
+        if [[ "$os_PACKAGE" = "deb" ]]; then
             kernel_version=`cat /proc/version | cut -d " " -f3`
             install_package make fakeroot dkms openvswitch-switch openvswitch-datapath-dkms linux-headers-$kernel_version
         else
