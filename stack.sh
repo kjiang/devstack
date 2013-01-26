@@ -1233,7 +1233,7 @@ if is_service_enabled quantum; then
         Q_PLUGIN_CONF_FILENAME=restproxy.ini
         Q_DB_NAME="restproxy_quantum"
         Q_PLUGIN_CLASS="quantum.plugins.bigswitch.plugin.QuantumRestProxyV2"
-        BS_FL_CONTROLLER=${Q_CONTROLLER:-localhost:80}
+        BS_FL_CONTROLLERS_PORT=${BS_FL_CONTROLLERS_PORT:-localhost:80}
         BS_FL_CONTROLLER_TIMEOUT=${Q_CONTROLLER_TIMEOUT:-10}
     else
         echo "Unknown Quantum plugin '$Q_PLUGIN'.. exiting"
@@ -1332,7 +1332,7 @@ if is_service_enabled q-svc; then
         fi
     elif [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
         iniset $Q_CONF_FILE DEFAULT allow_overlapping_ips $Q_ALLOW_OVERLAPPING_IP
-        iniset /$Q_PLUGIN_CONF_FILE RESTPROXY servers $BS_FL_CONTROLLER
+        iniset /$Q_PLUGIN_CONF_FILE RESTPROXY servers $BS_FL_CONTROLLERS_PORT
         iniset /$Q_PLUGIN_CONF_FILE RESTPROXY servertimeout $BS_FL_CONTROLLER_TIMEOUT
         # Setup integration bridge
         OVS_BRIDGE=${OVS_BRIDGE:-br-int}
