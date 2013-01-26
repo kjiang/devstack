@@ -340,6 +340,7 @@ Q_USE_NAMESPACE=${Q_USE_NAMESPACE:-True}
 Q_USE_ROOTWRAP=${Q_USE_ROOTWRAP=:-True}
 # Meta data IP
 Q_META_DATA_IP=${Q_META_DATA_IP:-$HOST_IP}
+Q_ALLOW_OVERLAPPING_IP=${Q_ALLOW_OVERLAPPING_IP:-False}
 
 # Name of the LVM volume group to use/create for iscsi volumes
 VOLUME_GROUP=${VOLUME_GROUP:-stack-volumes}
@@ -789,6 +790,22 @@ if is_service_enabled q-agt; then
     fi
 fi
 
+if is_service_enabled quantum; then
+    if [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
+        # Install deps
+        # FIXME add to ``files/apts/quantum``, but don't install if not needed!
+        if is_ubuntu; then
+            kernel_version=`cat /proc/version | cut -d " " -f3`
+            install_package make fakeroot dkms openvswitch-switch openvswitch-datapath-dkms linux-headers-$kernel_version
+        else
+            ### FIXME(dtroyer): Find RPMs for OpenVSwitch
+            echo "OpenVSwitch packages need to be located"
+            # Fedora does not started OVS by default
+            restart_service openvswitch
+        fi
+    fi
+fi
+
 if is_service_enabled swift; then
     # Install memcached for swift.
     install_package memcached
@@ -1211,6 +1228,13 @@ if is_service_enabled quantum; then
         Q_PLUGIN_CONF_FILENAME=linuxbridge_conf.ini
         Q_DB_NAME="quantum_linux_bridge"
         Q_PLUGIN_CLASS="quantum.plugins.linuxbridge.lb_quantum_plugin.LinuxBridgePluginV2"
+    elif [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
+        Q_PLUGIN_CONF_PATH=etc/quantum/plugins/bigswitch
+        Q_PLUGIN_CONF_FILENAME=restproxy.ini
+        Q_DB_NAME="restproxy_quantum"
+        Q_PLUGIN_CLASS="quantum.plugins.bigswitch.plugin.QuantumRestProxyV2"
+        BS_FL_CONTROLLER=${Q_CONTROLLER:-localhost:80}
+        BS_FL_CONTROLLER_TIMEOUT=${Q_CONTROLLER_TIMEOUT:-10}
     else
         echo "Unknown Quantum plugin '$Q_PLUGIN'.. exiting"
         exit 1
@@ -1306,6 +1330,13 @@ if is_service_enabled q-svc; then
         if [[ "$LB_VLAN_RANGES" != "" ]]; then
             iniset /$Q_PLUGIN_CONF_FILE VLANS network_vlan_ranges $LB_VLAN_RANGES
         fi
+    elif [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
+        iniset $Q_CONF_FILE DEFAULT allow_overlapping_ips $Q_ALLOW_OVERLAPPING_IP
+        iniset /$Q_PLUGIN_CONF_FILE RESTPROXY servers $BS_FL_CONTROLLER
+        iniset /$Q_PLUGIN_CONF_FILE RESTPROXY servertimeout $BS_FL_CONTROLLER_TIMEOUT
+        # Setup integration bridge
+        OVS_BRIDGE=${OVS_BRIDGE:-br-int}
+        quantum_setup_ovs_bridge $OVS_BRIDGE
     fi
 fi
 
@@ -1383,6 +1414,8 @@ if is_service_enabled q-dhcp; then
         iniset $Q_DHCP_CONF_FILE DEFAULT interface_driver quantum.agent.linux.interface.OVSInterfaceDriver
     elif [[ "$Q_PLUGIN" = "linuxbridge" ]]; then
         iniset $Q_DHCP_CONF_FILE DEFAULT interface_driver quantum.agent.linux.interface.BridgeInterfaceDriver
+    elif [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
+        iniset $Q_DHCP_CONF_FILE DEFAULT interface_driver quantum.agent.linux.interface.OVSInterfaceDriver
     fi
 fi
 
@@ -1745,6 +1778,8 @@ if is_service_enabled quantum; then
         NOVA_VIF_DRIVER="nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver"
     elif [[ "$Q_PLUGIN" = "linuxbridge" ]]; then
         NOVA_VIF_DRIVER="nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver"
+    elif [[ "$Q_PLUGIN" = "bigswitch_floodlight" ]]; then
+        NOVA_VIF_DRIVER=${NOVA_VIF_DRIVER:-"nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver"}
     fi
     add_nova_opt "libvirt_vif_driver=$NOVA_VIF_DRIVER"
     add_nova_opt "linuxnet_interface_driver=$LINUXNET_VIF_DRIVER"
