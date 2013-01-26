@@ -93,7 +93,7 @@ KEYSTONECLIENT_BRANCH=master    # 29Sep2012: a8f7879fcf
 #QUANTUM_REPO=${GIT_BASE}/openstack/quantum
 #QUANTUM_BRANCH=stable/folsom
 QUANTUM_REPO=${GIT_BASE}/bigswitch/quantum
-QUANTUM_BRANCH=folsom
+QUANTUM_BRANCH=folsom/master
 
 # quantum client
 QUANTUM_CLIENT_REPO=${GIT_BASE}/openstack/python-quantumclient
