@@ -81,7 +81,7 @@ NOVACLIENT_BRANCH=e31023fee104ff69fd14a01703b8e62aeff088a1
 
 # consolidated openstack python client
 OPENSTACKCLIENT_REPO=${GIT_BASE}/openstack/python-openstackclient.git
-OPENSTACKCLIENT_BRANCH=master
+OPENSTACKCLIENT_BRANCH=c086030133eb9c23aebeae8f6a4c70cd948864cb
 
 # python keystone client library to nova that horizon uses
 KEYSTONECLIENT_REPO=${GIT_BASE}/openstack/python-keystoneclient
@@ -93,11 +93,11 @@ QUANTUM_BRANCH=grizzly/master
 
 # quantum client
 QUANTUMCLIENT_REPO=${GIT_BASE}/openstack/python-quantumclient
-QUANTUMCLIENT_BRANCH=master
+QUANTUMCLIENT_BRANCH=aa41734347284a2430dc6f32ce4af23ba84d271d
 
 # Tempest test suite
 TEMPEST_REPO=${GIT_BASE}/openstack/tempest.git
-TEMPEST_BRANCH=master
+TEMPEST_BRANCH=4cf48b5b4dc6ea43e2f111e6f3263b537fdde429
 
 # heat service
 HEAT_REPO=${GIT_BASE}/openstack/heat.git
