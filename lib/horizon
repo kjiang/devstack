@@ -128,6 +128,10 @@ function install_horizon() {
     fi
 
     git_clone $HORIZON_REPO $HORIZON_DIR $HORIZON_BRANCH $HORIZON_TAG
+    # Note(sumit) Adding the following to pin Django to a version
+    # that is compatible with Horizon. This has already been fixed
+    # upstream. Need to remove when we update this devstack.
+    sed -i -e 's/Django>=1.4/Django>=1.4,<1.5/g' $HORIZON_DIR/tools/pip-requires
 }
 
 # start_horizon() - Start running processes, including screen
