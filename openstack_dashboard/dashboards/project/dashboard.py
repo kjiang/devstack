@@ -35,7 +35,9 @@ class NetworkPanels(horizon.PanelGroup):
     panels = ('networks',
               'routers',
               'loadbalancers',
-              'network_topology',)
+              'network_topology',
+              'servicechains',
+              'firewalls',)
 
 
 class ObjectStorePanels(horizon.PanelGroup):

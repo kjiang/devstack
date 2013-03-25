@@ -41,4 +41,7 @@ from openstack_dashboard.api import network
 from openstack_dashboard.api import nova
 from openstack_dashboard.api import quantum
 from openstack_dashboard.api import lbaas
+from openstack_dashboard.api import fwaas
+from openstack_dashboard.api import scaas
 from openstack_dashboard.api import swift
+

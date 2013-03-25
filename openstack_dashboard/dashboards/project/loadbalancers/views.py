@@ -27,7 +27,7 @@ from horizon import workflows
 
 from openstack_dashboard import api
 
-from .workflows import AddPool, AddMember, AddMonitor, AddVip
+from .workflows import AddLoadBalancer, AddPool, AddMember, AddMonitor, AddVip
 from .tabs import LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
 from .tabs import MemberDetailsTabs, MonitorDetailsTabs
 from .tables import DeleteMonitorLink
@@ -81,6 +81,15 @@ class IndexView(tabs.TabView):
                         exceptions.handle(request,
                                           _('Unable to delete vip.'))
         return self.get(request, *args, **kwargs)
+
+
+class AddLoadBalancerView(workflows.WorkflowView):
+    workflow_class = AddLoadBalancer
+    template_name = "project/loadbalancers/addloadbalancer.html"
+
+    def get_initial(self):
+        initial = super(AddLoadBalancerView, self).get_initial()
+        return initial
 
 
 class AddPoolView(workflows.WorkflowView):

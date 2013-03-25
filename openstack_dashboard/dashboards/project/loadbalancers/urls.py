@@ -17,6 +17,7 @@
 from django.conf.urls.defaults import url, patterns
 
 from .views import IndexView
+from .views import AddLoadBalancerView
 from .views import AddPoolView, AddMemberView, AddMonitorView, AddVipView
 from .views import PoolDetailsView, VipDetailsView
 from .views import MemberDetailsView, MonitorDetailsView
@@ -25,6 +26,7 @@ urlpatterns = patterns(
     'openstack_dashboard.dashboards.project.loadbalancers.views',
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^addpool$', AddPoolView.as_view(), name='addpool'),
+    url(r'^addloadbalancer$', AddLoadBalancerView.as_view(), name='addloadbalancer'),
     url(r'^addvip/(?P<pool_id>[^/]+)/$', AddVipView.as_view(), name='addvip'),
     url(r'^addmember$', AddMemberView.as_view(), name='addmember'),
     url(r'^addmonitor$', AddMonitorView.as_view(), name='addmonitor'),

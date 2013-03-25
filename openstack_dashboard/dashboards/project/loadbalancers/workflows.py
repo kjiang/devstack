@@ -30,6 +30,51 @@ from openstack_dashboard import api
 LOG = logging.getLogger(__name__)
 
 
+class AddLoadBalancerAction(workflows.Action):
+    name = forms.CharField(max_length=80, label=_("Name"))
+
+    def __init__(self, request, *args, **kwargs):
+        super(AddLoadBalancerAction, self).__init__(request, *args, **kwargs)
+
+    class Meta:
+        name = _("AddLoadBalancer")
+        permissions = ('openstack.services.network',)
+        help_text = _("Create Load Balancer")
+
+
+class AddLoadBalancerStep(workflows.Step):
+    action_class = AddLoadBalancerAction
+    contributes = ("name",)
+
+    def contribute(self, data, context):
+        context = super(AddLoadBalancerStep, self).contribute(data, context)
+        if data:
+            return context
+
+
+class AddLoadBalancer(workflows.Workflow):
+    slug = "addloadbalancer"
+    name = _("Add Load Balancer")
+    finalize_button_name = _("Add")
+    success_message = _('Added Load Balancer "%s".')
+    failure_message = _('Unable to add Load Balancer "%s".')
+    success_url = "horizon:project:loadbalancers:index"
+    default_steps = (AddLoadBalancerStep,)
+
+    def format_status_message(self, message):
+        name = self.context.get('name')
+        return message % name
+
+    def handle(self, request, context):
+        try:
+            policy = api.lbaas.lb_create(request, **context)
+            return True
+        except:
+            msg = self.format_status_message(self.failure_message)
+            exceptions.handle(request, msg)
+            return False
+
+
 class AddPoolAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(

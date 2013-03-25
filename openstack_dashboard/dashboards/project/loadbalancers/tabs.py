@@ -24,7 +24,35 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from .tables import PoolsTable, MembersTable, MonitorsTable
+from .tables import LoadBalancersTable, PoolsTable, MembersTable, MonitorsTable
+
+
+class Lb():
+    id = 'id'
+    name = 'name'
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+
+class LoadBalancersTab(tabs.TableTab):
+    table_classes = (LoadBalancersTable,)
+    name = _("LoadBalancers")
+    slug = "loadbalancers"
+    template_name = "horizon/common/_detail_table.html"
+
+    def get_loadbalancerstable_data(self):
+        try:
+            lbs = api.lbaas.lbs_get(self.tab_group.request)
+            lbsFormatted = [l.readable(self.tab_group.request) for
+                                l in lbs]
+        except:
+            lbsFormatted = []
+            exceptions.handle(self.tab_group.request,
+                              _('Unable to retrieve loadbalancer list.'))
+        lbsFormatted.append(Lb('myid','myname'))
+        return lbsFormatted
 
 
 class PoolsTab(tabs.TableTab):
@@ -82,7 +110,7 @@ class MonitorsTab(tabs.TableTab):
 
 class LoadBalancerTabs(tabs.TabGroup):
     slug = "lbtabs"
-    tabs = (PoolsTab, MembersTab, MonitorsTab)
+    tabs = (LoadBalancersTab, PoolsTab, MembersTab, MonitorsTab)
     sticky = True
 
 

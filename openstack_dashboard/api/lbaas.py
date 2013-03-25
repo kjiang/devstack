@@ -21,6 +21,13 @@ from openstack_dashboard.api.quantum import quantumclient
 from openstack_dashboard.api.quantum import subnet_get
 
 
+class Lb(QuantumAPIDictWrapper):
+    """Wrapper for quantum load balancer vip"""
+
+    def __init__(self, apiresource):
+        super(Lb, self).__init__(apiresource)
+
+
 class Vip(QuantumAPIDictWrapper):
     """Wrapper for quantum load balancer vip"""
 
@@ -110,6 +117,30 @@ class PoolMonitor(QuantumAPIDictWrapper):
     def __init__(self, apiresource):
         super(PoolMonitor, self).__init__(apiresource)
 
+
+def lb_create(request, **kwargs):
+    body = {'vip': {'name': kwargs['name']}}
+    lb = body
+    return Lb(lb)
+
+def lbs_get(request, **kwargs):
+    #lbs = quantumclient(request).list_lbs().get('lbs')
+    lbs = []
+    return [Lb(l) for l in lbs]
+
+def lb_get(request, lb_id):
+    #lb = quantumclient(request).show_lb(lb_id).get('lb')
+    lb = []
+    return Lb(lb)
+
+def lb_update(request, lb_id, **kwargs):
+    #lb = quantumclient(request).update_lb(lb_id, kwargs).get('lb')
+    lb = []
+    return Lb(lb)
+
+def lb_delete(request, lb_id):
+    #quantumclient(request).delete_lb(lb_id)
+    pass
 
 def vip_create(request, **kwargs):
     """Create a vip for a specified pool.

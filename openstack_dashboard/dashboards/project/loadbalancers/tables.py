@@ -27,6 +27,13 @@ from openstack_dashboard import api
 LOG = logging.getLogger(__name__)
 
 
+class AddLoadBalancerLink(tables.LinkAction):
+    name = "addloadbalancer"
+    verbose_name = _("Add Load Balancer")
+    url = "horizon:project:loadbalancers:addloadbalancer"
+    classes = ("btn-addloadbalancer",)
+
+
 class AddPoolLink(tables.LinkAction):
     name = "addpool"
     verbose_name = _("Add Pool")
@@ -62,6 +69,14 @@ class AddMonitorLink(tables.LinkAction):
     verbose_name = _("Add Monitor")
     url = "horizon:project:loadbalancers:addmonitor"
     classes = ("btn-addmonitor",)
+
+
+class DeleteLoadBalancerLink(tables.DeleteAction):
+    name = "deleteloadbalancer"
+    action_present = _("Delete")
+    action_past = _("Scheduled deletion of")
+    data_type_singular = _("Load Balancer")
+    data_type_plural = _("Load Balancers")
 
 
 class DeleteVipLink(tables.DeleteAction):
@@ -104,6 +119,16 @@ class DeleteMemberLink(tables.DeleteAction):
 def get_vip_link(pool):
     return reverse("horizon:project:loadbalancers:vipdetails",
                    args=(http.urlquote(pool.vip_id),))
+
+
+class LoadBalancersTable(tables.DataTable):
+    name = tables.Column("name",
+                       verbose_name=_("Name"))
+    class Meta:
+        name = "loadbalancerstable"
+        verbose_name = _("Load Balancers")
+        table_actions = (AddLoadBalancerLink, DeleteLoadBalancerLink)
+        row_actions = (DeleteLoadBalancerLink,)
 
 
 class PoolsTable(tables.DataTable):
