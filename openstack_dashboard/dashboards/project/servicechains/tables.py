@@ -36,7 +36,7 @@ class AddTemplateLink(tables.LinkAction):
 
 class AddChainLink(tables.LinkAction):
     name = "addchain"
-    verbose_name = _("Add Service Chain")
+    verbose_name = _("Create Chain from Template")
     classes = ("btn-addchain",)
 
     def get_link_url(self, template):

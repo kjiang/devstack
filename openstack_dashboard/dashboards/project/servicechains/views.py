@@ -83,7 +83,7 @@ class AddChainView(workflows.WorkflowView):
         initial = super(AddChainView, self).get_initial()
         initial['template_id'] = self.kwargs['template_id']
         try:
-            template = api.scaas.policy_get(self.request, initial['template_id'])
+            template = api.scaas.template_get(self.request, initial['template_id'])
         except:
             msg = _('Unable to retrieve template.')
             exceptions.handle(self.request, msg)

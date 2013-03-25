@@ -36,7 +36,7 @@ class AddPolicyLink(tables.LinkAction):
 
 class AddFirewallLink(tables.LinkAction):
     name = "addfirewall"
-    verbose_name = _("Add Firewall")
+    verbose_name = _("Create Firewall from Policy")
     classes = ("btn-addfirewall",)
 
     def get_link_url(self, policy):
