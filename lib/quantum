@@ -382,9 +382,10 @@ function start_quantum_agents() {
     screen_it q-l3 "cd $QUANTUM_DIR && python $AGENT_L3_BINARY --config-file $QUANTUM_CONF --config-file=$Q_L3_CONF_FILE"
     screen_it q-meta "cd $QUANTUM_DIR && python $AGENT_META_BINARY --config-file $QUANTUM_CONF --config-file=$Q_META_CONF_FILE"
 
-    if is_service_enabled q-lbaas; then
-        screen_it q-lbaas "cd $QUANTUM_DIR && python $AGENT_LBAAS_BINARY --config-file $QUANTUM_CONF --config-file=$LBAAS_AGENT_CONF_FILENAME"
-    fi
+    # (Sumit): Disabling starting the LBaaS agent since we do not use it
+    #if is_service_enabled q-lbaas; then
+    #    screen_it q-lbaas "cd $QUANTUM_DIR && python $AGENT_LBAAS_BINARY --config-file $QUANTUM_CONF --config-file=$LBAAS_AGENT_CONF_FILENAME"
+    #fi
 }
 
 # stop_quantum() - Stop running processes (non-screen)
@@ -507,9 +508,11 @@ function _configure_quantum_metadata_agent() {
 
 function _configure_quantum_lbaas()
 {
-    quantum_agent_lbaas_install_agent_packages
-    quantum_agent_lbaas_configure_common
-    quantum_agent_lbaas_configure_agent
+    # (Sumit): Disabling starting the LBaaS agent since we do not use it
+    #quantum_agent_lbaas_install_agent_packages
+    #quantum_agent_lbaas_configure_common
+    #quantum_agent_lbaas_configure_agent
+    Q_SERVICE_PLUGIN_CLASSES="quantum.plugins.bigswitch.plugin.QuantumRestProxyV2"
 }
 
 # _configure_quantum_plugin_agent() - Set config files for quantum plugin agent

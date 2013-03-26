@@ -50,15 +50,15 @@ CEILOMETERCLIENT_BRANCH=master
 
 # volume service
 CINDER_REPO=${GIT_BASE}/openstack/cinder.git
-CINDER_BRANCH=master
+CINDER_BRANCH=821e7ce075636f763b86b74fc8117fad6dbae3f1
 
 # volume client
 CINDERCLIENT_REPO=${GIT_BASE}/openstack/python-cinderclient.git
-CINDERCLIENT_BRANCH=master
+CINDERCLIENT_BRANCH=020778ddd942e762a5e543e41bc3f4d95df3b91e
 
 # compute service
 NOVA_REPO=${GIT_BASE}/openstack/nova.git
-NOVA_BRANCH=master
+NOVA_BRANCH=11a925ca74971002c26e6e61853f850b862ec62d
 
 # storage service
 SWIFT_REPO=${GIT_BASE}/openstack/swift.git
@@ -72,19 +72,19 @@ SWIFTCLIENT_BRANCH=master
 
 # image catalog service
 GLANCE_REPO=${GIT_BASE}/openstack/glance.git
-GLANCE_BRANCH=master
+GLANCE_BRANCH=a3c0a5fc2bc038155609829b1990afe93a603c07
 
 # python glance client library
 GLANCECLIENT_REPO=${GIT_BASE}/openstack/python-glanceclient.git
-GLANCECLIENT_BRANCH=master
+GLANCECLIENT_BRANCH=16208485bbab13e5869f7a8e5048c62315315dc7
 
 # unified auth system (manages accounts/tokens)
 KEYSTONE_REPO=${GIT_BASE}/openstack/keystone.git
-KEYSTONE_BRANCH=master
+KEYSTONE_BRANCH=bceee56097ec705298caac0fa8651c3c0b79d972
 
 # a websockets/html5 or flash powered VNC console for vm instances
 NOVNC_REPO=${GIT_BASE}/kanaka/noVNC.git
-NOVNC_BRANCH=master
+NOVNC_BRANCH=3b2acc2258d36137a37edfbe0f03a3099189c49d
 
 # a websockets/html5 or flash powered SPICE console for vm instances
 SPICE_REPO=http://anongit.freedesktop.org/git/spice/spice-html5.git
@@ -92,31 +92,31 @@ SPICE_BRANCH=master
 
 # django powered web control panel for openstack
 HORIZON_REPO=${GIT_BASE}/openstack/horizon.git
-HORIZON_BRANCH=master
+HORIZON_BRANCH=704c5a52f31dbc8a8d59b873b54d9fd1c66df9de
 
 # python client library to nova that horizon (and others) use
 NOVACLIENT_REPO=${GIT_BASE}/openstack/python-novaclient.git
-NOVACLIENT_BRANCH=master
+NOVACLIENT_BRANCH=609cbcef17cd0051ecb86bc60a29cf9c2be2517f
 
 # consolidated openstack python client
 OPENSTACKCLIENT_REPO=${GIT_BASE}/openstack/python-openstackclient.git
-OPENSTACKCLIENT_BRANCH=master
+OPENSTACKCLIENT_BRANCH=73fb88e9317f5f2e5270aca4976ffecd06621b0c
 
 # python keystone client library to nova that horizon uses
 KEYSTONECLIENT_REPO=${GIT_BASE}/openstack/python-keystoneclient.git
-KEYSTONECLIENT_BRANCH=master
+KEYSTONECLIENT_BRANCH=3a3e2540ff10a78ca9b4dde98671f6fd970e6568
 
 # quantum service
-QUANTUM_REPO=${GIT_BASE}/openstack/quantum.git
-QUANTUM_BRANCH=master
+QUANTUM_REPO=${GIT_BASE}/bigswitch/quantum
+QUANTUM_BRANCH=sumit/hdemo
 
 # quantum client
 QUANTUMCLIENT_REPO=${GIT_BASE}/openstack/python-quantumclient.git
-QUANTUMCLIENT_BRANCH=master
+QUANTUMCLIENT_BRANCH=fb2ed4e46958407279d0479edbcdfc706596ef7d
 
 # Tempest test suite
 TEMPEST_REPO=${GIT_BASE}/openstack/tempest.git
-TEMPEST_BRANCH=master
+TEMPEST_BRANCH=5284e257bf729593d9ec0f91f1e1dbc9763fa7b1
 
 # heat service
 HEAT_REPO=${GIT_BASE}/openstack/heat.git
