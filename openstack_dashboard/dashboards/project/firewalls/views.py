@@ -81,12 +81,6 @@ class AddFirewallView(workflows.WorkflowView):
 
     def get_initial(self):
         initial = super(AddFirewallView, self).get_initial()
-        initial['policy_id'] = self.kwargs['policy_id']
-        try:
-            policy = api.fwaas.policy_get(self.request, initial['policy_id'])
-        except:
-            msg = _('Unable to retrieve poicy.')
-            exceptions.handle(self.request, msg)
         return initial
 
 

@@ -110,7 +110,7 @@ class MonitorsTab(tabs.TableTab):
 
 class LoadBalancerTabs(tabs.TabGroup):
     slug = "lbtabs"
-    tabs = (LoadBalancersTab, PoolsTab, MembersTab, MonitorsTab)
+    tabs = (PoolsTab, MembersTab, MonitorsTab)
     sticky = True
 
 

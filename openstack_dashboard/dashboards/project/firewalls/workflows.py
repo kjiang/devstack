@@ -76,19 +76,34 @@ class AddPolicy(workflows.Workflow):
 
 class AddFirewallAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
+    policy_id = forms.ChoiceField(label=_("Policy"))
 
     def __init__(self, request, *args, **kwargs):
         super(AddFirewallAction, self).__init__(request, *args, **kwargs)
+
+        policy_id_choices = [('', _("Select a Policy"))]
+        try:
+            policies = api.fwaas.policies_get(request)
+        except:
+            exceptions.handle(request,
+                              _('Unable to retrieve policies list.'))
+            policies = []
+        for p in policies:
+            policy_id_choices.append((p.id, p.name))
+        policy_id_choices.append(('1', 'policy 1'))
+        policy_id_choices.append(('2', 'policy 2'))
+        self.fields['policy_id'].choices = policy_id_choices
 
     class Meta:
         name = _("AddFirewall")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall based on this policy. ")
-
+        help_text_template = ("project/firewalls/"
+                              "_launch_details_help.html")
 
 class AddFirewallStep(workflows.Step):
     action_class = AddFirewallAction
-    contributes = ("name",)
+    contributes = ("name", "policy_id")
 
     def contribute(self, data, context):
         context = super(AddFirewallStep, self).contribute(data, context)

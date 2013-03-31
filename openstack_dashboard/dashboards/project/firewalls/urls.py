@@ -24,7 +24,7 @@ urlpatterns = patterns(
     'openstack_dashboard.dashboards.project.firewalls.views',
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^addpolicy$', AddPolicyView.as_view(), name='addpolicy'),
-    url(r'^addfirewall/(?P<policy_id>[^/]+)/$', AddFirewallView.as_view(), name='addfirewall'),
+    url(r'^addfirewall$', AddFirewallView.as_view(), name='addfirewall'),
     url(r'^policy/(?P<policy_id>[^/]+)/$',
         PolicyDetailsView.as_view(), name='policydetails'),
     url(r'^firewall/(?P<firewall_id>[^/]+)/$',

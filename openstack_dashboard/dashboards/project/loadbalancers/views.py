@@ -28,15 +28,30 @@ from horizon import workflows
 from openstack_dashboard import api
 
 from .workflows import AddLoadBalancer, AddPool, AddMember, AddMonitor, AddVip
-from .tabs import LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
+from .tabs import Lb, LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
 from .tabs import MemberDetailsTabs, MonitorDetailsTabs
-from .tables import DeleteMonitorLink
-
+from .tables import LoadBalancersTable, DeleteMonitorLink
 
 LOG = logging.getLogger(__name__)
 
 
-class IndexView(tabs.TabView):
+class IndexView(tables.DataTableView):
+    table_class = LoadBalancersTable
+    template_name = 'project/loadbalancers/index.html'
+
+    def get_data(self):
+        try:
+            lbs = api.lbaas.lbs_get(self.request)
+            lbsFormatted = [l.readable(self.request) for
+                                l in lbs]
+        except:
+            lbsFormatted = []
+            exceptions.handle(self.request,
+                              _('Unable to retrieve loadbalancer list.'))
+        lbsFormatted.append(Lb('myid','myname'))
+        return lbsFormatted
+
+class LoadBalancerDetailsView(tabs.TabbedTableView):
     tab_group_class = (LoadBalancerTabs)
     template_name = 'project/loadbalancers/details_tabs.html'
 

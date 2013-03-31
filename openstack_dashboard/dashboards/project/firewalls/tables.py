@@ -36,13 +36,9 @@ class AddPolicyLink(tables.LinkAction):
 
 class AddFirewallLink(tables.LinkAction):
     name = "addfirewall"
-    verbose_name = _("Create Firewall from Policy")
+    verbose_name = _("Create Firewall")
+    url = "horizon:project:firewalls:addfirewall"
     classes = ("btn-addfirewall",)
-
-    def get_link_url(self, policy):
-        base_url = reverse("horizon:project:firewalls:addfirewall",
-                           kwargs={'policy_id': policy.id})
-        return base_url
 
 
 class DeletePolicyLink(tables.DeleteAction):
@@ -78,6 +74,6 @@ class FirewallsTable(tables.DataTable):
     class Meta:
         name = "firewallstable"
         verbose_name = _("Firewalls")
-        table_actions = (DeleteFirewallLink,)
+        table_actions = (AddFirewallLink, DeleteFirewallLink)
         row_actions = (DeleteFirewallLink,)
 

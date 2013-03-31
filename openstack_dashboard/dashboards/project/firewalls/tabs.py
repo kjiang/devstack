@@ -82,7 +82,7 @@ class FirewallsTab(tabs.TableTab):
 
 class FirewallTabs(tabs.TabGroup):
     slug = "fwtabs"
-    tabs = (PoliciesTab, FirewallsTab)
+    tabs = (FirewallsTab,)
     sticky = True
 
 

@@ -1,0 +1,12 @@
+{% load i18n horizon humanize %}
+
+<p>{% blocktrans %}Create a firewall based on a policy.{% endblocktrans %}</p>
+<p>{% blocktrans %}Below shows the selected policy details.{% endblocktrans %}</p>
+
+<h4>{% trans "Policy Details" %}</h4>
+<table class="policy_table table-striped">
+  <tbody>
+    <tr><td class="policy_name">{% trans "Name" %}</td><td><span id="policy_name"></span></td></tr>
+    <tr><td class="policy_name">{% trans "Rules" %}</td><td><span id="policy_rules"></span></td></tr>
+  </tbody>
+</table>
