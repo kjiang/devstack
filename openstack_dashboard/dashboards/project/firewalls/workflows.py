@@ -66,7 +66,7 @@ class AddPolicy(workflows.Workflow):
 
     def handle(self, request, context):
         try:
-            policy = api.fwaas.policy_create(request, **context)
+            policy = api.fwaas.firewall_policy_create(request, **context)
             return True
         except:
             msg = self.format_status_message(self.failure_message)
@@ -76,34 +76,37 @@ class AddPolicy(workflows.Workflow):
 
 class AddFirewallAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
-    policy_id = forms.ChoiceField(label=_("Policy"))
+    description = forms.CharField(max_length=80, label=_("Description"), required=False)
+    firewall_policy_id = forms.ChoiceField(label=_("Policy"))
+    admin_state_up = forms.BooleanField(label=_("Admin State"),
+                                        initial=True, required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(AddFirewallAction, self).__init__(request, *args, **kwargs)
 
         policy_id_choices = [('', _("Select a Policy"))]
         try:
-            policies = api.fwaas.policies_get(request)
+            policies = api.fwaas.firewall_policies_get(request)
         except:
             exceptions.handle(request,
                               _('Unable to retrieve policies list.'))
             policies = []
         for p in policies:
             policy_id_choices.append((p.id, p.name))
-        policy_id_choices.append(('1', 'policy 1'))
-        policy_id_choices.append(('2', 'policy 2'))
-        self.fields['policy_id'].choices = policy_id_choices
+        policy_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16be', 'policy 1'))
+        policy_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16ce', 'policy 2'))
+        self.fields['firewall_policy_id'].choices = policy_id_choices
 
     class Meta:
         name = _("AddFirewall")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall based on this policy. ")
-        help_text_template = ("project/firewalls/"
-                              "_launch_details_help.html")
+        #help_text_template = ("project/firewalls/"
+        #                      "_launch_details_help.html")
 
 class AddFirewallStep(workflows.Step):
     action_class = AddFirewallAction
-    contributes = ("name", "policy_id")
+    contributes = ("name", "description", "firewall_policy_id", "admin_state_up")
 
     def contribute(self, data, context):
         context = super(AddFirewallStep, self).contribute(data, context)

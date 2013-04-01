@@ -114,6 +114,22 @@ class LoadBalancerTabs(tabs.TabGroup):
     sticky = True
 
 
+class LbDetailsTab(tabs.Tab):
+    name = _("Load Balancer Details")
+    slug = "lbdetails"
+    template_name = "project/loadbalancers/_lb_details.html"
+
+    def get_context_data(self, request):
+        pid = self.tab_group.kwargs['lb_id']
+        try:
+            lb = api.lbaas.loadbalancer_get(request, pid)
+        except:
+            lb = []
+            exceptions.handle(request,
+                              _('Unable to retrieve load balancer details.'))
+        return {'lb': lb}
+
+
 class PoolDetailsTab(tabs.Tab):
     name = _("Pool Details")
     slug = "pooldetails"
@@ -176,6 +192,11 @@ class MonitorDetailsTab(tabs.Tab):
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve monitor details.'))
         return {'monitor': monitor}
+
+
+class LbDetailsTabs(tabs.TabGroup):
+    slug = "lbtabs"
+    tabs = (LbDetailsTab,)
 
 
 class PoolDetailsTabs(tabs.TabGroup):

@@ -27,6 +27,20 @@ class Lb(QuantumAPIDictWrapper):
     def __init__(self, apiresource):
         super(Lb, self).__init__(apiresource)
 
+    class AttributeDict(dict):
+        def __getattr__(self, attr):
+            return self[attr]
+
+        def __setattr__(self, attr, value):
+            self[attr] = value
+
+    def readable(self, request):
+        pFormatted = {'id': self.id,
+                      'name': self.name,
+                      'description': self.description,
+                      'vips_list': self.vips_list,
+                      'admin_state_up': self.admin_state_up}
+        return self.AttributeDict(pFormatted)
 
 class Vip(QuantumAPIDictWrapper):
     """Wrapper for quantum load balancer vip"""
@@ -118,29 +132,36 @@ class PoolMonitor(QuantumAPIDictWrapper):
         super(PoolMonitor, self).__init__(apiresource)
 
 
-def lb_create(request, **kwargs):
-    body = {'vip': {'name': kwargs['name']}}
-    lb = body
+def loadbalancer_create(request, **kwargs):
+    """Create a loadbalancer. 
+    :param request: request context
+    :param name: name for loadbalancer
+    :param description: description for loadbalancer
+    :param vips_list: list of vips for loadbalancer
+    :returns: loadbalancer object
+    """
+    body = {'loadbalancer': {'name': kwargs['name'],
+                             'description': kwargs['description'],
+                             'vips_list': kwargs['vips_list'],
+                             'admin_state_up': kwargs['admin_state_up']
+                             }}
+    lb = quantumclient(request).create_loadbalancer(body).get('loadbalancer')
     return Lb(lb)
 
-def lbs_get(request, **kwargs):
-    #lbs = quantumclient(request).list_lbs().get('lbs')
-    lbs = []
+def loadbalancers_get(request, **kwargs):
+    lbs = quantumclient(request).list_loadbalancers().get('loadbalancers')
     return [Lb(l) for l in lbs]
 
-def lb_get(request, lb_id):
-    #lb = quantumclient(request).show_lb(lb_id).get('lb')
-    lb = []
+def loadbalancer_get(request, lb_id):
+    lb = quantumclient(request).show_loadbalancer(lb_id).get('loadbalancer')
     return Lb(lb)
 
-def lb_update(request, lb_id, **kwargs):
-    #lb = quantumclient(request).update_lb(lb_id, kwargs).get('lb')
-    lb = []
+def loadbalancer_update(request, lb_id, **kwargs):
+    lb = quantumclient(request).update_loadbalancer(lb_id, kwargs).get('loadbalancer')
     return Lb(lb)
 
-def lb_delete(request, lb_id):
-    #quantumclient(request).delete_lb(lb_id)
-    pass
+def loadbalancer_delete(request, lb_id):
+    quantumclient(request).delete_loadbalancer(lb_id)
 
 def vip_create(request, **kwargs):
     """Create a vip for a specified pool.

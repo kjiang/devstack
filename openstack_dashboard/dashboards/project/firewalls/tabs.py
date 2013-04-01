@@ -24,7 +24,17 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from .tables import PoliciesTable, FirewallsTable
+from .tables import RulesTable, PoliciesTable, FirewallsTable
+
+
+class Rule():
+    id = 'id'
+    description = 'description'
+
+    def __init__(self, id, description):
+        self.id = id
+        self.description = description
+
 
 class Policy():
     id = 'id'
@@ -34,13 +44,40 @@ class Policy():
         self.id = id
         self.name = name
 
+
 class Firewall():
     id = 'id'
     name = 'name'
+    description = 'description'
+    direction = 'direction'
+    firewall_policy_id = 'firewall_policy_id'
 
-    def __init__(self, id, name):
+    def __init__(self, id, name, description, direction, policy):
         self.id = id
         self.name = name
+        self.description = description
+        self.direction = direction
+        self.firewall_policy_id = policy
+
+
+class RulesTab(tabs.TableTab):
+    table_classes = (RulesTable,)
+    name = _("Rules")
+    slug = "rules"
+    template_name = "horizon/common/_detail_table.html"
+
+    def get_rulestable_data(self):
+        try:
+            rules = api.fwaas.firewall_rules_get(self.tab_group.request)
+            rulesFormatted = [r.readable(self.tab_group.request) for
+                              r in rules]
+        except:
+            rulesFormatted = []
+            exceptions.handle(self.tab_group.request,
+                              _('Unable to retrieve rules list.'))
+        rulesFormatted.append(Rule('myid','myname'))
+        return rulesFormatted
+
 
 class PoliciesTab(tabs.TableTab):
     table_classes = (PoliciesTable,)
@@ -50,7 +87,7 @@ class PoliciesTab(tabs.TableTab):
 
     def get_policiestable_data(self):
         try:
-            policies = api.fwaas.policies_get(self.tab_group.request)
+            policies = api.fwaas.firewall_policies_get(self.tab_group.request)
             policiesFormatted = [p.readable(self.tab_group.request) for
                               p in policies]
         except:
@@ -61,29 +98,26 @@ class PoliciesTab(tabs.TableTab):
         return policiesFormatted
 
 
-class FirewallsTab(tabs.TableTab):
-    table_classes = (FirewallsTable,)
-    name = _("Firewalls")
-    slug = "firewalls"
-    template_name = "horizon/common/_detail_table.html"
-
-    def get_firewallstable_data(self):
-        try:
-            firewalls = api.fwaas.firewalls_get(self.tab_group.request)
-            firewallsFormatted = [f.readable(self.tab_group.request) for
-                                f in firewalls]
-        except:
-            firewallsFormatted = []
-            exceptions.handle(self.tab_group.request,
-                              _('Unable to retrieve firewall list.'))
-        firewallsFormatted.append(Firewall('myid','myname'))
-        return firewallsFormatted
-
-
 class FirewallTabs(tabs.TabGroup):
     slug = "fwtabs"
-    tabs = (FirewallsTab,)
+    tabs = (PoliciesTab, RulesTab)
     sticky = True
+
+
+class RuleDetailsTab(tabs.Tab):
+    name = _("Rule Details")
+    slug = "ruledetails"
+    template_name = "project/firewalls/_rule_details.html"
+
+    def get_context_data(self, request):
+        fid = self.tab_group.kwargs['firewall_rule_id']
+        try:
+            rule = api.fwaas.firewall_policy_get(request, fid)
+        except:
+            rule = []
+            exceptions.handle(request,
+                              _('Unable to retrieve policy details.'))
+        return {'rule': rule}
 
 
 class PolicyDetailsTab(tabs.Tab):
@@ -92,9 +126,9 @@ class PolicyDetailsTab(tabs.Tab):
     template_name = "project/firewalls/_policy_details.html"
 
     def get_context_data(self, request):
-        pid = self.tab_group.kwargs['policy_id']
+        fid = self.tab_group.kwargs['firewall_policy_id']
         try:
-            policy = api.fwaas.policy_get(request, pid)
+            policy = api.fwaas.firewall_policy_get(request, fid)
         except:
             policy = []
             exceptions.handle(request,
@@ -116,6 +150,11 @@ class FirewallDetailsTab(tabs.Tab):
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve firewall details.'))
         return {'firewall': firewall}
+
+
+class RuleDetailsTabs(tabs.TabGroup):
+    slug = "ruletabs"
+    tabs = (RuleDetailsTab,)
 
 
 class PolicyDetailsTabs(tabs.TabGroup):

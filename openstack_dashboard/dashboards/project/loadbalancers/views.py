@@ -29,7 +29,7 @@ from openstack_dashboard import api
 
 from .workflows import AddLoadBalancer, AddPool, AddMember, AddMonitor, AddVip
 from .tabs import Lb, LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
-from .tabs import MemberDetailsTabs, MonitorDetailsTabs
+from .tabs import MemberDetailsTabs, MonitorDetailsTabs, LbDetailsTabs
 from .tables import LoadBalancersTable, DeleteMonitorLink
 
 LOG = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         try:
-            lbs = api.lbaas.lbs_get(self.request)
+            lbs = api.lbaas.loadbalancers_get(self.request)
             lbsFormatted = [l.readable(self.request) for
                                 l in lbs]
         except:
@@ -50,6 +50,22 @@ class IndexView(tables.DataTableView):
                               _('Unable to retrieve loadbalancer list.'))
         lbsFormatted.append(Lb('myid','myname'))
         return lbsFormatted
+
+    def post(self, request, *args, **kwargs):
+        obj_ids = request.POST.getlist('object_ids')
+        action = request.POST['action']
+
+        m = re.search('.delete([a-z]+)', action).group(1)
+        if obj_ids == []:
+            obj_ids.append(re.search('([0-9a-z-]+)$', action).group(1))
+        if m == 'loadbalancer':
+            for obj_id in obj_ids:
+                try:
+                    api.lbaas.loadbalancer_delete(request, obj_id)
+                except:
+                    exceptions.handle(request,
+                                      _('Unable to delete load balancer.'))
+        return self.get(request, *args, **kwargs)
 
 class LoadBalancerDetailsView(tabs.TabbedTableView):
     tab_group_class = (LoadBalancerTabs)
@@ -155,6 +171,9 @@ class AddMonitorView(workflows.WorkflowView):
         initial = super(AddMonitorView, self).get_initial()
         return initial
 
+class LbDetailsView(tabs.TabView):
+    tab_group_class = (LbDetailsTabs)
+    template_name = 'project/loadbalancers/details_tabs.html'
 
 class PoolDetailsView(tabs.TabView):
     tab_group_class = (PoolDetailsTabs)

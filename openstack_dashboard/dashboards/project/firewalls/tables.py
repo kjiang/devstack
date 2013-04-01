@@ -27,13 +27,6 @@ from openstack_dashboard import api
 LOG = logging.getLogger(__name__)
 
 
-class AddPolicyLink(tables.LinkAction):
-    name = "addpolicy"
-    verbose_name = _("Add Policy")
-    url = "horizon:project:firewalls:addpolicy"
-    classes = ("btn-addpolicy",)
-
-
 class AddFirewallLink(tables.LinkAction):
     name = "addfirewall"
     verbose_name = _("Create Firewall")
@@ -41,12 +34,11 @@ class AddFirewallLink(tables.LinkAction):
     classes = ("btn-addfirewall",)
 
 
-class DeletePolicyLink(tables.DeleteAction):
-    name = "deletepolicy"
-    action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
-    data_type_singular = _("Policy")
-    data_type_plural = _("Policies")
+class ManageResourcesLink(tables.LinkAction):
+    name = "manageresources"
+    verbose_name = _("Manage Firewall Resources")
+    url = "horizon:project:firewalls:managefirewall"
+    classes = ("btn-managefirewall",)
 
 
 class DeleteFirewallLink(tables.DeleteAction):
@@ -56,24 +48,58 @@ class DeleteFirewallLink(tables.DeleteAction):
     data_type_singular = _("Firewall")
     data_type_plural = _("Firewalls")
 
+    def action(self, request, obj_id):
+        api.fwaas.firewall_delete(request, obj_id)
+
+
+class RulesTable(tables.DataTable):
+    description = tables.Column("description",
+                                verbose_name=_("Description"))
+    direction = tables.Column("direction",
+                              verbose_name=_("Direction"))
+    protocol = tables.Column("protocol",
+                             verbose_name=_("Protocol"))
+    source_ip_address = tables.Column("source_ip_address",
+                                      verbose_name=_("Source"))
+    destination_ip_address = tables.Column("destination_ip_address",
+                                           verbose_name=_("Destination"))
+    port_range = tables.Column("port_range",
+                               verbose_name=_("Port Range"))
+    application = tables.Column("application",
+                                verbose_name=_("Application"))
+    action = tables.Column("action",
+                           verbose_name=_("Action"))
+    dynamic_attributes = tables.Column("dynamic_attributes",
+                                verbose_name=_("Dynamic Attributes"))
+    class Meta:
+        name = "rulestable"
+        verbose_name = _("Rules")
+
 
 class PoliciesTable(tables.DataTable):
     name = tables.Column("name",
-                       verbose_name=_("Name"))
+                         verbose_name=_("Name"))
+    description = tables.Column("description",
+                                verbose_name=_("Description"))
+    firewall_rules_list = tables.Column("firewall_rules_list",
+                                   verbose_name=_("Firewall Rules"))
     class Meta:
         name = "policiestable"
         verbose_name = _("Policies")
-        table_actions = (AddPolicyLink, DeletePolicyLink)
-        row_actions = (AddFirewallLink, DeletePolicyLink)
 
 
 class FirewallsTable(tables.DataTable):
     name = tables.Column("name",
-                       verbose_name=_("Name"))
+                         verbose_name=_("Name"),
+                         link="horizon:project:firewalls:firewalldetails")
+    description = tables.Column("description",
+                                verbose_name=_("Description"))
+    firewall_policy_id = tables.Column("firewall_policy_id",
+                                   verbose_name=_("Firewall Policy ID"))
 
     class Meta:
         name = "firewallstable"
         verbose_name = _("Firewalls")
-        table_actions = (AddFirewallLink, DeleteFirewallLink)
+        table_actions = (ManageResourcesLink, AddFirewallLink, DeleteFirewallLink)
         row_actions = (DeleteFirewallLink,)
 

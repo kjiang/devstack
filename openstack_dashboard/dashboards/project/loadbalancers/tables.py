@@ -33,6 +33,11 @@ class AddLoadBalancerLink(tables.LinkAction):
     url = "horizon:project:loadbalancers:addloadbalancer"
     classes = ("btn-addloadbalancer",)
 
+class ManageResourcesLink(tables.LinkAction):
+    name = "manageresources"
+    verbose_name = _("Manage Resources")
+    url = "horizon:project:loadbalancers:lb"
+    classes = ("btn-manageresources",)
 
 class AddPoolLink(tables.LinkAction):
     name = "addpool"
@@ -123,11 +128,12 @@ def get_vip_link(pool):
 
 class LoadBalancersTable(tables.DataTable):
     name = tables.Column("name",
-                       verbose_name=_("Name"))
+                         verbose_name=_("Name"),
+                         link="horizon:project:loadbalancers:lbdetails")
     class Meta:
         name = "loadbalancerstable"
         verbose_name = _("Load Balancers")
-        table_actions = (AddLoadBalancerLink, DeleteLoadBalancerLink)
+        table_actions = (ManageResourcesLink, AddLoadBalancerLink, DeleteLoadBalancerLink)
         row_actions = (DeleteLoadBalancerLink,)
 
 

@@ -28,38 +28,33 @@ from horizon import workflows
 from openstack_dashboard import api
 
 from .workflows import AddPolicy, AddFirewall
-from .tabs import FirewallTabs
+from .tabs import Firewall, FirewallTabs
 from .tabs import PolicyDetailsTabs, FirewallDetailsTabs
-
+from .tables import FirewallsTable
 
 LOG = logging.getLogger(__name__)
 
 
-class IndexView(tabs.TabView):
+class IndexView(tables.DataTableView):
+    table_class = FirewallsTable
+    template_name = 'project/firewalls/index.html'
+
+    def get_data(self):
+        try:
+            fws = api.fwaas.firewalls_get(self.request)
+            fwsFormatted = [f.readable(self.request) for
+                                f in fws]
+        except:
+            fwsFormatted = []
+            exceptions.handle(self.request,
+                              _('Unable to retrieve firewall list.'))
+        fwsFormatted.append(Firewall('myid','myname', 'description', 'direction', 'firewall_policy_id'))
+        return fwsFormatted
+
+
+class ManageFirewallView(tabs.TabView):
     tab_group_class = (FirewallTabs)
     template_name = 'project/firewalls/details_tabs.html'
-
-    def post(self, request, *args, **kwargs):
-        obj_ids = request.POST.getlist('object_ids')
-        action = request.POST['action']
-        m = re.search('.delete([a-z]+)', action).group(1)
-        if obj_ids == []:
-            obj_ids.append(re.search('([0-9a-z-]+)$', action).group(1))
-        if m == 'policy':
-            for obj_id in obj_ids:
-                try:
-                    api.fwaas.policy_delete(request, obj_id)
-                except:
-                    exceptions.handle(request,
-                                      _('Unable to delete policy.'))
-        if m == 'firewall':
-            for obj_id in obj_ids:
-                try:
-                    api.fwaas.firewall_delete(request, obj_id)
-                except:
-                    exceptions.handle(request,
-                                      _('Unable to delete firewall.'))
-        return self.get(request, *args, **kwargs)
 
 
 class AddPolicyView(workflows.WorkflowView):

@@ -35,10 +35,13 @@ NEW_LB_URL = "horizon:project:loadbalancers:lb"
 class AddLoadBalancerAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"),
                            required = False)
-    vip_id = forms.DynamicChoiceField(label=_("Vip"),
-                                      required=False,
-                                      help_text=_("Choose an available Vip for "
-                                                   "this load balancer."))
+    description = forms.CharField(initial="", required=False,
+                                  max_length=80, label=_("Description"))
+    vips_list = forms.MultipleChoiceField(label=_("Vip(s)"),
+                                          required=True,
+                                          initial=["default"],
+                                          widget=forms.CheckboxSelectMultiple(),
+                                          help_text=_("Select Vips for this load balancer."))
     protocol_port = forms.CharField(max_length=80, label=_("Protocol Port"),
                                     required = False)
     admin_state_up = forms.BooleanField(label=_("Admin State"),
@@ -47,7 +50,7 @@ class AddLoadBalancerAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(AddLoadBalancerAction, self).__init__(request, *args, **kwargs)
 
-        vip_id_choices = [('', _("Select a Vip"))]
+        vips_list_choices = []
         try:
             vips = api.lbaas.vips_get(request)
         except:
@@ -57,9 +60,9 @@ class AddLoadBalancerAction(workflows.Action):
         vips = sorted(vips,
                        key=lambda vip: vip.name)
         for v in vips:
-            vip_id_choices.append((v.id, v.name))
-            vip_id_choices.append(('-1', 'Create a New Vip and Add Load Balancer Later'))
-        self.fields['vip_id'].choices = vip_id_choices
+            vips_list_choices.append((v.id, v.name))
+        vips_list_choices.append(('-1', 'Manage/Create Vips'))
+        self.fields['vips_list'].choices = vips_list_choices
 
     class Meta:
         name = _("AddLoadBalancer")
@@ -69,12 +72,44 @@ class AddLoadBalancerAction(workflows.Action):
 
 class AddLoadBalancerStep(workflows.Step):
     action_class = AddLoadBalancerAction
-    contributes = ("name", "vip_id", "protocol_port", "admin_state_up")
+    contributes = ("name", "description", "vips_list", "admin_state_up")
 
     def contribute(self, data, context):
         context = super(AddLoadBalancerStep, self).contribute(data, context)
         if data:
             return context
+
+
+class AddLoadBalancer(workflows.Workflow):
+    slug = "addloadbalancer"
+    name = _("Add Load Balancer")
+    finalize_button_name = _("Add/Proceed")
+    success_message = _('Added Load Balancer "%s".')
+    failure_message = _('Unable to add Load Balancer "%s".')
+    success_url = "horizon:project:loadbalancers:index"
+    default_steps = (AddLoadBalancerStep,)
+
+    def format_status_message(self, message):
+        name = self.context.get('name')
+        return message % name
+
+    def handle(self, request, context):
+        if context['vips_list'] == []:
+            self.failure_message = "No Vip selected for load balancer %s."
+            return False
+        if '-1' in context['vips_list']:
+            context['name'] = ''
+            self.success_message = "Proceed to create new Vip%s"
+            self.success_url = "horizon:project:loadbalancers:lb"
+            return True
+#try:
+        lb = api.lbaas.loadbalancer_create(request, **context)
+        return True
+        #except:
+        #    msg = self.format_status_message(self.failure_message)
+        #    exceptions.handle(request, msg)
+        #    return False
+
 
 
 class AddPoolAction(workflows.Action):
@@ -241,7 +276,7 @@ class AddVip(workflows.Workflow):
     finalize_button_name = _("Add")
     success_message = _('Added Vip "%s".')
     failure_message = _('Unable to add Vip "%s".')
-    success_url = "horizon:project:loadbalancers:index"
+    success_url = "horizon:project:loadbalancers:lb"
     default_steps = (AddVipStep,)
 
     def format_status_message(self, message):
@@ -373,7 +408,7 @@ class AddMember(workflows.Workflow):
     finalize_button_name = _("Add")
     success_message = _('Added Member "%s".')
     failure_message = _('Unable to add Member %s.')
-    success_url = "horizon:project:loadbalancers:index"
+    success_url = "horizon:project:loadbalancers:lb"
     default_steps = (AddMemberStep,)
 
     def handle(self, request, context):
@@ -472,7 +507,7 @@ class AddMonitor(workflows.Workflow):
     finalize_button_name = _("Add")
     success_message = _('Added Monitor "%s".')
     failure_message = _('Unable to add Monitor "%s".')
-    success_url = "horizon:project:loadbalancers:index"
+    success_url = "horizon:project:loadbalancers:lb"
     default_steps = (AddMonitorStep,)
 
     def handle(self, request, context):
@@ -483,35 +518,3 @@ class AddMonitor(workflows.Workflow):
         except:
             exceptions.handle(request, _("Unable to add monitor."))
         return False
-
-
-class AddLoadBalancer(workflows.Workflow):
-    slug = "addloadbalancer"
-    name = _("Add Load Balancer")
-    finalize_button_name = _("Add")
-    success_message = _('Added Load Balancer "%s".')
-    failure_message = _('Unable to add Load Balancer "%s".')
-    success_url = "horizon:project:loadbalancers:index"
-    default_steps = (AddLoadBalancerStep,)
-
-    def format_status_message(self, message):
-        name = self.context.get('name')
-        return message % name
-
-    def handle(self, request, context):
-        if context['vip_id'] == '':
-            self.failure_message = "No vip for load balancer %s"
-            return False
-        if context['vip_id'] == '-1':
-            context['name'] = ''
-            self.failure_message = "Action Aborted - Create New Vip%s"
-            self.success_url = "horizon:project:loadbalancers:lb"
-            return False
-
-        try:
-            lb = api.lbaas.lb_create(request, **context)
-            return True
-        except:
-            msg = self.format_status_message(self.failure_message)
-            exceptions.handle(request, msg)
-            return False

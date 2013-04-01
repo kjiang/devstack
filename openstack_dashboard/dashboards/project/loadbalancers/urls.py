@@ -19,7 +19,7 @@ from django.conf.urls.defaults import url, patterns
 from .views import IndexView
 from .views import AddLoadBalancerView
 from .views import AddPoolView, AddMemberView, AddMonitorView, AddVipView
-from .views import PoolDetailsView, VipDetailsView
+from .views import PoolDetailsView, VipDetailsView, LbDetailsView
 from .views import MemberDetailsView, MonitorDetailsView
 from .views import LoadBalancerDetailsView
 
@@ -32,6 +32,8 @@ urlpatterns = patterns(
     url(r'^addvip/(?P<pool_id>[^/]+)/$', AddVipView.as_view(), name='addvip'),
     url(r'^addmember$', AddMemberView.as_view(), name='addmember'),
     url(r'^addmonitor$', AddMonitorView.as_view(), name='addmonitor'),
+    url(r'^lb/(?P<lb_id>[^/]+)/$',
+        LbDetailsView.as_view(), name='lbdetails'),
     url(r'^pool/(?P<pool_id>[^/]+)/$',
         PoolDetailsView.as_view(), name='pooldetails'),
     url(r'^vip/(?P<vip_id>[^/]+)/$',

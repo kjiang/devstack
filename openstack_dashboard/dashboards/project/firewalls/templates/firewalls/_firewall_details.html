@@ -4,27 +4,21 @@
   <hr class="header_rule">
   <dl>
     <dt>{% trans "ID: " %}</dt>
-    <dd>{{ member.id }}</dd>
+    <dd>{{ firewall.id }}</dd>
 
     <dt>{% trans "Tenant ID: " %}</dt>
-    <dd>{{ member.tenant_id }}</dd>
+    <dd>{{ firewall.tenant_id }}</dd>
 
-    <dt>{% trans "Pool ID: " %}</dt>
-    <dd>{{ member.pool_id }}</dd>
+    <dt>{% trans "Name: " %}</dt>
+    <dd>{{ firewall.name }}</dd>
 
-    <dt>{% trans "Address: " %}</dt>
-    <dd>{{ member.address }}</dd>
-
-    <dt>{% trans "Protocol Port: " %}</dt>
-    <dd>{{ member.protocol_port }}</dd>
-
-    <dt>{% trans "Weight: " %}</dt>
-    <dd>{{ member.weight }}</dd>
-
-    <dt>{% trans "Admin State Up: " %}</dt>
-    <dd>{{ member.admin_state_up }}</dd>
+    <dt>{% trans "Policy: " %}</dt>
+    <dd>{{ firewall.firewall_policy_id }}</dd>
 
     <dt>{% trans "Status: " %}</dt>
-    <dd>{{ member.status }}</dd>
+    <dd>{{ firewall.status }}</dd>
+
+    <dt>{% trans "Admin State: " %}</dt>
+    <dd>{{ firewall.admin_state_up }}</dd>
   </dl>
 </div>
