@@ -159,6 +159,8 @@ class Client(object):
     security_group_path = "/security-groups/%s"
     security_group_rules_path = "/security-group-rules"
     security_group_rule_path = "/security-group-rules/%s"
+    lbs_path = "/lb/loadbalancers"
+    lb_path = "/lb/loadbalancers/%s"
     vips_path = "/lb/vips"
     vip_path = "/lb/vips/%s"
     pools_path = "/lb/pools"
@@ -177,6 +179,12 @@ class Client(object):
     agent_path = "/agents/%s"
     network_gateways_path = "/network-gateways"
     network_gateway_path = "/network-gateways/%s"
+    firewalls_path = "/firewalls"
+    firewall_path = "/firewalls/%s"
+    rules_path = "/firewall/firewall_rules"
+    rule_path = "/firewall/firewall_rules/%s"
+    policies_path = "/firewall/firewall_policies"
+    policy_path = "/firewall/firewall_policies/%s"
 
     DHCP_NETS = '/dhcp-networks'
     DHCP_AGENTS = '/dhcp-agents'
@@ -524,6 +532,44 @@ class Client(object):
                         params=_params)
 
     @APIParamsCall
+    def list_loadbalancers(self, retrieve_all=True, **_params):
+        """
+        Fetches a list of all load balancer vips for a tenant
+        """
+        # Pass filters in "params" argument to do_request
+        return self.list('loadbalancers', self.lbs_path, retrieve_all,
+                         **_params)
+
+    @APIParamsCall
+    def show_loadbalancer(self, lb, **_params):
+        """
+        Fetches information of a certain load balancer loadbalancer
+        """
+        return self.get(self.lb_path % (lb), params=_params)
+
+    @APIParamsCall
+    def create_loadbalancer(self, body=None):
+        """
+        Creates a new load balancer vip
+        """
+        print "in create_loadbalancer %s" % body
+        return self.post(self.lbs_path, body=body)
+
+    @APIParamsCall
+    def update_loadbalancer(self, lb, body=None):
+        """
+        Updates a load balancer
+        """
+        return self.put(self.lb_path % (lb), body=body)
+
+    @APIParamsCall
+    def delete_loadbalancer(self, lb):
+        """
+        Deletes the specified load balancer vip
+        """
+        return self.delete(self.lb_path % (lb))
+
+    @APIParamsCall
     def list_vips(self, retrieve_all=True, **_params):
         """
         Fetches a list of all load balancer vips for a tenant
@@ -868,6 +914,115 @@ class Client(object):
         """
         return self.delete((self.agent_path + self.L3_ROUTERS + "/%s") % (
             l3_agent, router_id))
+
+    @APIParamsCall
+    def list_firewalls(self, retrieve_all=True, **_params):
+        """
+        Fetches a list of all firewalls
+        """
+        # Pass filters in "params" argument to do_request
+        return self.list('firewalls', self.firewalls_path, retrieve_all,
+                         **_params)
+
+    @APIParamsCall
+    def show_firewall(self, firewall, **_params):
+        """
+        Fetches information of a certain firewall
+        """
+        return self.get(self.firewall_path % (firewall), params=_params)
+
+    @APIParamsCall
+    def create_firewall(self, body=None):
+        """
+        Creates a new firewall
+        """
+        return self.post(self.firewalls_path, body=body)
+
+    @APIParamsCall
+    def update_firewall(self, firewall, body=None):
+        """
+        Updates a firewall
+        """
+        return self.put(self.firewall_path % (firewall), body=body)
+
+    @APIParamsCall
+    def delete_firewall(self, firewall):
+        """
+        Deletes the specified firewall
+        """
+        return self.delete(self.firewall_path % (firewall))
+
+    @APIParamsCall
+    def list_firewall_rules(self, retrieve_all=True, **_params):
+        """
+        Fetches a list of all firewall rules
+        """
+        return self.list('firewall_rules', self.rules_path, retrieve_all,
+                         **_params)
+
+    @APIParamsCall
+    def show_firewall_rule(self, rule, **_params):
+        """
+        Fetches information of a certain firewall rule
+        """
+        return self.get(self.rule_path % (rule), params=_params)
+
+    @APIParamsCall
+    def create_firewall_rule(self, body=None):
+        """
+        Creates a new firewall rule
+        """
+        return self.post(self.rules_path, body=body)
+
+    @APIParamsCall
+    def update_firewall_rule(self, rule, body=None):
+        """
+        Updates a firewall rule
+        """
+        return self.put(self.rule_path % (rule), body=body)
+
+    @APIParamsCall
+    def delete_firewall_rule(self, rule):
+        """
+        Deletes the specified firewall rule
+        """
+        return self.delete(self.rule_path % (rule))
+
+    @APIParamsCall
+    def list_firewall_policies(self, retrieve_all=True, **_params):
+        """
+        Fetches a list of all firewall policies
+        """
+        return self.list('firewall_policies', self.policies_path, retrieve_all,
+                         **_params)
+
+    @APIParamsCall
+    def show_firewall_policy(self, policy, **_params):
+        """
+        Fetches information of a certain firewall policy
+        """
+        return self.get(self.policy_path % (policy), params=_params)
+
+    @APIParamsCall
+    def create_firewall_policy(self, body=None):
+        """
+        Creates a new firewall policy
+        """
+        return self.post(self.policies_path, body=body)
+
+    @APIParamsCall
+    def update_firewall_policy(self, policy, body=None):
+        """
+        Updates a firewall policy
+        """
+        return self.put(self.policy_path % (policy), body=body)
+
+    @APIParamsCall
+    def delete_firewall_policy(self, policy):
+        """
+        Deletes the specified firewall policy
+        """
+        return self.delete(self.policy_path % (policy))
 
     def __init__(self, **kwargs):
         """ Initialize a new client for the Quantum v2.0 API. """
