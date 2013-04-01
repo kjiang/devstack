@@ -91,8 +91,10 @@ SPICE_REPO=http://anongit.freedesktop.org/git/spice/spice-html5.git
 SPICE_BRANCH=master
 
 # django powered web control panel for openstack
-HORIZON_REPO=${GIT_BASE}/openstack/horizon.git
-HORIZON_BRANCH=704c5a52f31dbc8a8d59b873b54d9fd1c66df9de
+#HORIZON_REPO=${GIT_BASE}/openstack/horizon.git
+#HORIZON_BRANCH=704c5a52f31dbc8a8d59b873b54d9fd1c66df9de
+HORIZON_REPO=${GIT_BASE}/bigswitch/hosted-trial.git
+HORIZON_BRANCH=summit/horizon
 
 # python client library to nova that horizon (and others) use
 NOVACLIENT_REPO=${GIT_BASE}/openstack/python-novaclient.git
@@ -111,8 +113,10 @@ QUANTUM_REPO=${GIT_BASE}/bigswitch/quantum
 QUANTUM_BRANCH=sumit/hdemo
 
 # quantum client
-QUANTUMCLIENT_REPO=${GIT_BASE}/openstack/python-quantumclient.git
-QUANTUMCLIENT_BRANCH=fb2ed4e46958407279d0479edbcdfc706596ef7d
+#QUANTUMCLIENT_REPO=${GIT_BASE}/openstack/python-quantumclient.git
+#QUANTUMCLIENT_BRANCH=fb2ed4e46958407279d0479edbcdfc706596ef7d
+QUANTUMCLIENT_REPO=${GIT_BASE}/bigswitch/hosted-trial.git
+QUANTUMCLIENT_BRANCH=summit/python-quantumclient
 
 # Tempest test suite
 TEMPEST_REPO=${GIT_BASE}/openstack/tempest.git
