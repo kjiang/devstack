@@ -185,6 +185,10 @@ class Client(object):
     rule_path = "/firewall/firewall_rules/%s"
     policies_path = "/firewall/firewall_policies"
     policy_path = "/firewall/firewall_policies/%s"
+    templates_path = "/service_chain_templatess"
+    template_path = "/service_chain_templates/%s"
+    service_chains_path = "/service_chains"
+    service_chain_path = "/service_chains/%s"
 
     DHCP_NETS = '/dhcp-networks'
     DHCP_AGENTS = '/dhcp-agents'
@@ -1023,6 +1027,78 @@ class Client(object):
         Deletes the specified firewall policy
         """
         return self.delete(self.policy_path % (policy))
+
+    @APIParamsCall
+    def list_service_chains(self, retrieve_all=True, **_params):
+        """
+        Fetches a list of all service chains
+        """
+        return self.list('service_chains', self.service_chains_path, retrieve_all,
+                         **_params)
+
+    @APIParamsCall
+    def show_service_chain(self, chain, **_params):
+        """
+        Fetches information of a certain service chain
+        """
+        return self.get(self.service_chain_path % (chain), params=_params)
+
+    @APIParamsCall
+    def create_service_chain(self, body=None):
+        """
+        Creates a new service chain
+        """
+        return self.post(self.service_chains_path, body=body)
+
+    @APIParamsCall
+    def update_service_chain(self, chain, body=None):
+        """
+        Updates a service chain
+        """
+        return self.put(self.service_chain_path % (chain), body=body)
+
+    @APIParamsCall
+    def delete_service_chain(self, chain):
+        """
+        Deletes the specified service chain
+        """
+        return self.delete(self.service_chain_path % (chain))
+
+    @APIParamsCall
+    def list_service_chain_templates(self, retrieve_all=True, **_params):
+        """
+        Fetches a list of all service chain templates
+        """
+        return self.list('service_chain_templates', self.templates_path, retrieve_all,
+                         **_params)
+
+    @APIParamsCall
+    def show_service_chain_template(self, template, **_params):
+        """
+        Fetches information of a certain service chain template
+        """
+        return self.get(self.template_path % (template), params=_params)
+
+    @APIParamsCall
+    def create_service_chain_template(self, body=None):
+        """
+        Creates a new service chain template
+        """
+        return self.post(self.templates_path, body=body)
+
+    @APIParamsCall
+    def update_service_chain_template(self, template, body=None):
+        """
+        Updates a service chain template
+        """
+        return self.put(self.template_path % (template), body=body)
+
+    @APIParamsCall
+    def delete_service_chain_template(self, template):
+        """
+        Deletes the specified service chain template
+        """
+        return self.delete(self.template_path % (template))
 
     def __init__(self, **kwargs):
         """ Initialize a new client for the Quantum v2.0 API. """
