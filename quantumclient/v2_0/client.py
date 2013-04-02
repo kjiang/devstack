@@ -924,7 +924,6 @@ class Client(object):
         """
         Fetches a list of all firewalls
         """
-        # Pass filters in "params" argument to do_request
         return self.list('firewalls', self.firewalls_path, retrieve_all,
                          **_params)
 
