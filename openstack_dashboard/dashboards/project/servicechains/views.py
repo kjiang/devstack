@@ -27,74 +27,54 @@ from horizon import workflows
 
 from openstack_dashboard import api
 
-from .workflows import AddTemplate, AddChain
-from .tabs import ChainTabs
-from .tabs import TemplateDetailsTabs, ChainDetailsTabs
-
+from .workflows import AddServiceChain
+from .tabs import ServiceChainTabs, ServiceChain
+from .tabs import ServiceChainTemplateDetailsTabs, ServiceChainDetailsTabs
+from .tables import ServiceChainsTable
 
 LOG = logging.getLogger(__name__)
 
 
-class IndexView(tabs.TabView):
-    tab_group_class = (ChainTabs)
+class IndexView(tables.DataTableView):
+    table_class = ServiceChainsTable
+    template_name = 'project/servicechains/index.html'
+
+    def get_data(self):
+        try:
+            scs = api.scaas.service_chains_get(self.request)
+            scsFormatted = [s.readable(self.request) for
+                            s in scs]
+        except:
+            scsFormatted = []
+            exceptions.handle(self.request,
+                              _('Unable to retrieve service chain list.'))
+        scsFormatted.append(ServiceChain('myid','myname'))
+        return scsFormatted
+
+
+class ManageResourcesView(tabs.TabView):
+    tab_group_class = (ServiceChainTabs)
     template_name = 'project/servicechains/details_tabs.html'
 
-    def post(self, request, *args, **kwargs):
-        obj_ids = request.POST.getlist('object_ids')
-        action = request.POST['action']
-        m = re.search('.delete([a-z]+)', action).group(1)
-        if obj_ids == []:
-            obj_ids.append(re.search('([0-9a-z-]+)$', action).group(1))
-        if m == 'template':
-            for obj_id in obj_ids:
-                try:
-                    api.scaas.template_delete(request, obj_id)
-                except:
-                    exceptions.handle(request,
-                                      _('Unable to delete template.'))
-        if m == 'chain':
-            for obj_id in obj_ids:
-                try:
-                    api.scaas.chain_delete(request, obj_id)
-                except:
-                    exceptions.handle(request,
-                                      _('Unable to delete chain.'))
-        return self.get(request, *args, **kwargs)
 
-
-class AddTemplateView(workflows.WorkflowView):
-    workflow_class = AddTemplate
-    template_name = "project/servicechains/addtemplate.html"
-
-    def get_initial(self):
-        initial = super(AddTemplateView, self).get_initial()
-        return initial
-
-
-class AddChainView(workflows.WorkflowView):
-    workflow_class = AddChain
+class AddServiceChainView(workflows.WorkflowView):
+    workflow_class = AddServiceChain
     template_name = "project/servicechains/addchain.html"
 
     def get_context_data(self, **kwargs):
-        context = super(AddChainView, self).get_context_data(**kwargs)
+        context = super(AddServiceChainView, self).get_context_data(**kwargs)
         return context
 
     def get_initial(self):
-        initial = super(AddChainView, self).get_initial()
-        initial['template_id'] = self.kwargs['template_id']
-        try:
-            template = api.scaas.template_get(self.request, initial['template_id'])
-        except:
-            msg = _('Unable to retrieve template.')
-            exceptions.handle(self.request, msg)
+        initial = super(AddServiceChainView, self).get_initial()
         return initial
 
 
-class TemplateDetailsView(tabs.TabView):
-    tab_group_class = (TemplateDetailsTabs)
+class ServiceChainTemplateDetailsView(tabs.TabView):
+    tab_group_class = (ServiceChainTemplateDetailsTabs)
     template_name = 'project/servicechains/details_tabs.html'
 
 
-class ChainDetailsView(tabs.TabView):
-    tab_group_class = (ChainDetailsTabs)
+class ServiceChainDetailsView(tabs.TabView):
+    tab_group_class = (ServiceChainDetailsTabs)
     template_name = 'project/servicechains/details_tabs.html'

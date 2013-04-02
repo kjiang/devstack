@@ -24,9 +24,9 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from .tables import TemplatesTable, ChainsTable
+from .tables import TemplatesTable, ServiceChainsTable
 
-class Template():
+class ServiceChainTemplate():
     id = 'id'
     name = 'name'
 
@@ -34,7 +34,7 @@ class Template():
         self.id = id
         self.name = name
 
-class Chain():
+class ServiceChain():
     id = 'id'
     name = 'name'
 
@@ -50,43 +50,43 @@ class TemplatesTab(tabs.TableTab):
 
     def get_templatestable_data(self):
         try:
-            templates = api.scaas.templates_get(self.tab_group.request)
-            templatesFormatted = [p.readable(self.tab_group.request) for
-                              p in templates]
+            templates = api.scaas.service_chain_templates_get(self.tab_group.request)
+            templatesFormatted = [t.readable(self.tab_group.request) for
+                                  t in templates]
         except:
             templatesFormatted = []
             exceptions.handle(self.tab_group.request,
-                              _('Unable to retrieve policies list.'))
-        templatesFormatted.append(Template('myid', 'myname'))
+                              _('Unable to retrieve templates list.'))
+        templatesFormatted.append(ServiceChainTemplate('myid', 'myname'))
         return templatesFormatted
 
 
-class ChainsTab(tabs.TableTab):
-    table_classes = (ChainsTable,)
-    name = _("Chains")
-    slug = "chains"
+class ServiceChainsTab(tabs.TableTab):
+    table_classes = (ServiceChainsTable,)
+    name = _("Service Chains")
+    slug = "servicechains"
     template_name = "horizon/common/_detail_table.html"
 
     def get_chainstable_data(self):
         try:
-            chains = api.scaas.chains_get(self.tab_group.request)
+            chains = api.scaas.service_chains_get(self.tab_group.request)
             chainsFormatted = [c.readable(self.tab_group.request) for
-                                c in chains]
+                               c in chains]
         except:
             chainsFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve service chains list.'))
-        chainsFormatted.append(Chain('myid', 'myname'))
+        chainsFormatted.append(ServiceChain('myid', 'myname'))
         return chainsFormatted
 
 
-class ChainTabs(tabs.TabGroup):
+class ServiceChainTabs(tabs.TabGroup):
     slug = "sctabs"
-    tabs = (TemplatesTab, ChainsTab)
+    tabs = (TemplatesTab,)
     sticky = True
 
 
-class TemplateDetailsTab(tabs.Tab):
+class ServiceChainTemplateDetailsTab(tabs.Tab):
     name = _("Template Details")
     slug = "templatedetails"
     template_name = "project/servicechains/_template_details.html"
@@ -94,7 +94,7 @@ class TemplateDetailsTab(tabs.Tab):
     def get_context_data(self, request):
         tid = self.tab_group.kwargs['template_id']
         try:
-            template = api.scaas.template_get(request, tid)
+            template = api.scaas.service_chain_template_get(request, tid)
         except:
             template = []
             exceptions.handle(request,
@@ -102,7 +102,7 @@ class TemplateDetailsTab(tabs.Tab):
         return {'template': template}
 
 
-class ChainDetailsTab(tabs.Tab):
+class ServiceChainDetailsTab(tabs.Tab):
     name = _("Service Chain Details")
     slug = "chaindetails"
     template_name = "project/servicechains/_chain_details.html"
@@ -110,7 +110,7 @@ class ChainDetailsTab(tabs.Tab):
     def get_context_data(self, request):
         sid = self.tab_group.kwargs['chain_id']
         try:
-            chain = api.scaas.chain_get(request, sid)
+            chain = api.scaas.service_chain_get(request, sid)
         except:
             chain = []
             exceptions.handle(self.tab_group.request,
@@ -118,11 +118,11 @@ class ChainDetailsTab(tabs.Tab):
         return {'chain': chain}
 
 
-class TemplateDetailsTabs(tabs.TabGroup):
+class ServiceChainTemplateDetailsTabs(tabs.TabGroup):
     slug = "templatetabs"
-    tabs = (TemplateDetailsTab,)
+    tabs = (ServiceChainTemplateDetailsTab,)
 
 
-class ChainDetailsTabs(tabs.TabGroup):
+class ServiceChainDetailsTabs(tabs.TabGroup):
     slug = "chaintabs"
-    tabs = (ChainDetailsTab,)
+    tabs = (ServiceChainDetailsTab,)

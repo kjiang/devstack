@@ -4,27 +4,33 @@
   <hr class="header_rule">
   <dl>
     <dt>{% trans "ID: " %}</dt>
-    <dd>{{ member.id }}</dd>
+    <dd>{{ chain.id }}</dd>
 
     <dt>{% trans "Tenant ID: " %}</dt>
-    <dd>{{ member.tenant_id }}</dd>
+    <dd>{{ chain.tenant_id }}</dd>
 
-    <dt>{% trans "Pool ID: " %}</dt>
-    <dd>{{ member.pool_id }}</dd>
+    <dt>{% trans "Name: " %}</dt>
+    <dd>{{ chain.name }}</dd>
 
-    <dt>{% trans "Address: " %}</dt>
-    <dd>{{ member.address }}</dd>
+    <dt>{% trans "Description: " %}</dt>
+    <dd>{{ chain.description }}</dd>
 
-    <dt>{% trans "Protocol Port: " %}</dt>
-    <dd>{{ member.protocol_port }}</dd>
+    <dt>{% trans "Template ID: " %}</dt>
+    <dd>{{ chain.service_chain_template_id }}</dd>
 
-    <dt>{% trans "Weight: " %}</dt>
-    <dd>{{ member.weight }}</dd>
+    <dt>{% trans "Source Network: " %}</dt>
+    <dd>{{ chain.source_network }}</dd>
 
-    <dt>{% trans "Admin State Up: " %}</dt>
-    <dd>{{ member.admin_state_up }}</dd>
+    <dt>{% trans "Destination Network: " %}</dt>
+    <dd>{{ chain.destination_network }}</dd>
+
+    <dt>{% trans "List of Services: " %}</dt>
+    <dd>{{ chain.services_list }}</dd>
+
+    <dt>{% trans "Admin State: " %}</dt>
+    <dd>{{ chain.admin_state_up }}</dd>
 
     <dt>{% trans "Status: " %}</dt>
-    <dd>{{ member.status }}</dd>
+    <dd>{{ chain.status }}</dd>
   </dl>
 </div>

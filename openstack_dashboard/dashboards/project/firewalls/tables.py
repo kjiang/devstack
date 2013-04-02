@@ -34,13 +34,6 @@ class AddFirewallLink(tables.LinkAction):
     classes = ("btn-addfirewall",)
 
 
-class ManageResourcesLink(tables.LinkAction):
-    name = "manageresources"
-    verbose_name = _("Manage Firewall Resources")
-    url = "horizon:project:firewalls:managefirewall"
-    classes = ("btn-managefirewall",)
-
-
 class DeleteFirewallLink(tables.DeleteAction):
     name = "deletefirewall"
     action_present = _("Delete")
@@ -50,6 +43,13 @@ class DeleteFirewallLink(tables.DeleteAction):
 
     def action(self, request, obj_id):
         api.fwaas.firewall_delete(request, obj_id)
+
+
+class ManageResourcesLink(tables.LinkAction):
+    name = "manageresources"
+    verbose_name = _("Manage Firewall Resources")
+    url = "horizon:project:firewalls:managefirewall"
+    classes = ("btn-managefirewall",)
 
 
 class RulesTable(tables.DataTable):

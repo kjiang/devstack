@@ -17,15 +17,15 @@
 from django.conf.urls.defaults import url, patterns
 
 from .views import IndexView
-from .views import AddTemplateView, AddChainView
-from .views import TemplateDetailsView, ChainDetailsView
+from .views import AddServiceChainView
+from .views import ServiceChainTemplateDetailsView, ServiceChainDetailsView, ManageResourcesView
 
 urlpatterns = patterns(
     'openstack_dashboard.dashboards.project.servicechains.views',
     url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^addtemplate$', AddTemplateView.as_view(), name='addtemplate'),
-    url(r'^addchain/(?P<template_id>[^/]+)/$', AddChainView.as_view(), name='addchain'),
+    url(r'^managechain$', ManageResourcesView.as_view(), name='managechain'),
+    url(r'^addchain$', AddServiceChainView.as_view(), name='addchain'),
     url(r'^template/(?P<template_id>[^/]+)/$',
-        TemplateDetailsView.as_view(), name='templatedetails'),
+        ServiceChainTemplateDetailsView.as_view(), name='templatedetails'),
     url(r'^chain/(?P<chain_id>[^/]+)/$',
-        ChainDetailsView.as_view(), name='chaindetails'))
+        ServiceChainDetailsView.as_view(), name='chaindetails'))

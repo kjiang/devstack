@@ -30,50 +30,6 @@ from openstack_dashboard import api
 LOG = logging.getLogger(__name__)
 
 
-class AddPolicyAction(workflows.Action):
-    name = forms.CharField(max_length=80, label=_("Name"))
-
-    def __init__(self, request, *args, **kwargs):
-        super(AddPolicyAction, self).__init__(request, *args, **kwargs)
-
-    class Meta:
-        name = _("AddPolicy")
-        permissions = ('openstack.services.network',)
-        help_text = _("Create Firewall Policy")
-
-class AddPolicyStep(workflows.Step):
-    action_class = AddPolicyAction
-    contributes = ("name",)
-
-    def contribute(self, data, context):
-        context = super(AddPolicyStep, self).contribute(data, context)
-        if data:
-            return context
-
-
-class AddPolicy(workflows.Workflow):
-    slug = "addpolicy"
-    name = _("Add Policy")
-    finalize_button_name = _("Add")
-    success_message = _('Added Policy "%s".')
-    failure_message = _('Unable to add Policy "%s".')
-    success_url = "horizon:project:firewalls:index"
-    default_steps = (AddPolicyStep,)
-
-    def format_status_message(self, message):
-        name = self.context.get('name')
-        return message % name
-
-    def handle(self, request, context):
-        try:
-            policy = api.fwaas.firewall_policy_create(request, **context)
-            return True
-        except:
-            msg = self.format_status_message(self.failure_message)
-            exceptions.handle(request, msg)
-            return False
-
-
 class AddFirewallAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(max_length=80, label=_("Description"), required=False)

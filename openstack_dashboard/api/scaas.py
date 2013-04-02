@@ -20,11 +20,11 @@ from openstack_dashboard.api.quantum import QuantumAPIDictWrapper
 from openstack_dashboard.api.quantum import quantumclient
 
 
-class Template(QuantumAPIDictWrapper):
+class ServiceChainTemplate(QuantumAPIDictWrapper):
     """Wrapper for quantum service chain template"""
 
     def __init__(self, apiresource):
-        super(Template, self).__init__(apiresource)
+        super(ServiceChainTemplate, self).__init__(apiresource)
 
     class AttributeDict(dict):
         def __getattr__(self, attr):
@@ -40,11 +40,11 @@ class Template(QuantumAPIDictWrapper):
         return self.AttributeDict(pFormatted)
 
 
-class Chain(QuantumAPIDictWrapper):
+class ServiceChain(QuantumAPIDictWrapper):
     """Wrapper for quantum service chain"""
 
     def __init__(self, apiresource):
-        super(Chain, self).__init__(apiresource)
+        super(ServiceChain, self).__init__(apiresource)
 
     class AttributeDict(dict):
         def __getattr__(self, attr):
@@ -60,59 +60,60 @@ class Chain(QuantumAPIDictWrapper):
         return self.AttributeDict(mFormatted)
 
 
-def template_create(request, **kwargs):
+def service_chain_template_create(request, **kwargs):
     """Create a service chain template
 
     :param request: request context
     :param name: template name
-    :returns: Template object
+    :param description: temlate description
+    :param service_types_list: list of service types in the template
+    :returns: ServiceChainTemplate object
     """
-    body = {'template': {'name': kwargs['name']}}
-    #template = quantumclient(request).create_template(body).get('template')
-    template = body
-    return Template(template)
+    body = {'service_chain_template': {'name': kwargs['name'],
+                                       'description': kwargs['description'],
+                                       'service_types_list': kwargs['service_types_list']}}
+    template = quantumclient(request).create_service_chain_template(body).get('service_chain_template')
+    return ServiceChainTemplate(template)
 
+def service_chain_templates_get(request, **kwargs):
+    templates = quantumclient(request).list_service_chain_templates().get('service_chain_templates')
+    return [ServiceChainTemplate(t) for t in templates]
 
-def templates_get(request, **kwargs):
-    #templates = quantumclient(request).list_templates().get('templates')
-    templates = []
-    return [Template(t) for t in templates]
+def service_chain_template_get(request, template_id):
+    template = quantumclient(request).show_service_chain_template(template_id).get('service_chain_template')
+    return ServiceChainTemplate(template)
 
+def service_chain_template_delete(request, template_id):
+    quantumclient(request).delete_service_chain_template(template_id)
 
-def template_get(request, template_id):
-    #template = quantumclient(request).show_template(template_id).get('template')
-    template = []
-    return Template(template)
-
-
-def template_delete(request, template_id):
-    #quantumclient(request).delete_template(template_id)
-    pass
-
-def chain_create(request, **kwargs):
+def service_chain_create(request, **kwargs):
     """Create a chain based on specified template
 
     :param request: request context
-    :param name: name for chain
+    :param name: name for service_chain
+    :param description: description for service_chain
+    :param service_chain_template_id: service_chain_template_id
+    :param source_network: source network string
+    :param destination_network: destination network string
+    :param services_list: list of services in the chain
     """
-    body = {'chain': {'name': kwargs['name']}}
-    #chain = quantumclient(request).create_chain(body).get('chain')
-    chain = body
-    return Chain(chain)
+    body = {'service_chain': {'name': kwargs['name'],
+                              'description': kwargs['description'],
+                              'service_chain_template_id': kwargs['service_chain_template_id'],
+                              'source_network': kwargs['source_network'],
+                              'destination_network': kwargs['destination_network'],
+                              'services_list': kwargs['services_list']}}
+    chain = quantumclient(request).create_service_chain(body).get('service_chain')
+    return ServiceChain(chain)
 
+def service_chains_get(request, **kwargs):
+    chains = quantumclient(request).list_service_chains().get('service_chains')
+    return [ServiceChain(c) for c in chains]
 
-def chains_get(request, **kwargs):
-    #chains = quantumclient(request).list_chains().get('chains')
-    chains = []
-    return [Chain(c) for c in chains]
+def service_chain_get(request, chain_id):
+    chain = quantumclient(request).show_service_chain(chain_id).get('service_chain')
+    return ServiceChain(chain)
 
+def service_chain_delete(request, chain):
+    quantumclient(request).delete_service_chain(chain)
 
-def chain_get(request, chain_id):
-    #chain = quantumclient(request).show_chain(chain_id).get('chain')
-    chain = []
-    return Chain(chain)
-
-
-def chain_delete(request, chain):
-    #quantumclient(request).delete_chain(chain)
-    pass

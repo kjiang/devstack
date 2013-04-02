@@ -27,7 +27,7 @@ from horizon import workflows
 
 from openstack_dashboard import api
 
-from .workflows import AddPolicy, AddFirewall
+from .workflows import AddFirewall
 from .tabs import Firewall, FirewallTabs
 from .tabs import PolicyDetailsTabs, FirewallDetailsTabs
 from .tables import FirewallsTable
@@ -55,15 +55,6 @@ class IndexView(tables.DataTableView):
 class ManageFirewallView(tabs.TabView):
     tab_group_class = (FirewallTabs)
     template_name = 'project/firewalls/details_tabs.html'
-
-
-class AddPolicyView(workflows.WorkflowView):
-    workflow_class = AddPolicy
-    template_name = "project/firewalls/addpolicy.html"
-
-    def get_initial(self):
-        initial = super(AddPolicyView, self).get_initial()
-        return initial
 
 
 class AddFirewallView(workflows.WorkflowView):

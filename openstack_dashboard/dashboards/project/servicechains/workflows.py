@@ -30,79 +30,59 @@ from openstack_dashboard import api
 LOG = logging.getLogger(__name__)
 
 
-class AddTemplateAction(workflows.Action):
+class AddServiceChainAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
+    description = forms.CharField(max_length=80, label=_("Description"), required=False, initial='')
+    service_chain_template_id = forms.ChoiceField(label=_("Service Chain Template"))
+    source_network = forms.CharField(max_length=80, label=_("Source Network"))
+    destination_network = forms.CharField(max_length=80, label=_("Destination Network"))
+    services_list = forms.MultipleChoiceField(label=_("Service(s)"),
+                                              required=False,
+                                              initial=["default"],
+                                              widget=forms.CheckboxSelectMultiple(),
+                                              help_text=_("Select services for this chain."))
+    admin_state_up = forms.BooleanField(label=_("Admin State"),
+                                        initial=True, required=False)
 
     def __init__(self, request, *args, **kwargs):
-        super(AddTemplateAction, self).__init__(request, *args, **kwargs)
+        super(AddServiceChainAction, self).__init__(request, *args, **kwargs)
 
-    class Meta:
-        name = _("AddTemplate")
-        permissions = ('openstack.services.network',)
-        help_text = _("Create Service Chain Template")
-
-class AddTemplateStep(workflows.Step):
-    action_class = AddTemplateAction
-    contributes = ("name",)
-
-    def contribute(self, data, context):
-        context = super(AddTemplateStep, self).contribute(data, context)
-        if data:
-            return context
-
-
-class AddTemplate(workflows.Workflow):
-    slug = "addtemplate"
-    name = _("Add Template")
-    finalize_button_name = _("Add")
-    success_message = _('Added Template "%s".')
-    failure_message = _('Unable to add Template "%s".')
-    success_url = "horizon:project:servicechains:index"
-    default_steps = (AddTemplateStep,)
-
-    def format_status_message(self, message):
-        name = self.context.get('name')
-        return message % name
-
-    def handle(self, request, context):
+        template_id_choices = [('', _("Select a Template"))]
         try:
-            template = api.scaas.template_create(request, **context)
-            return True
+            templates = api.scaas.service_chain_templates_get(request)
         except:
-            msg = self.format_status_message(self.failure_message)
-            exceptions.handle(request, msg)
-            return False
-
-
-class AddChainAction(workflows.Action):
-    name = forms.CharField(max_length=80, label=_("Name"))
-
-    def __init__(self, request, *args, **kwargs):
-        super(AddChainAction, self).__init__(request, *args, **kwargs)
+            exceptions.handle(request,
+                              _('Unable to retrieve service chain templates list.'))
+            templates = []
+        for t in templates:
+            template_id_choices.append((t.id, t.name))
+        template_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16be', 'template 1'))
+        template_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16ce', 'template 2'))
+        self.fields['service_chain_template_id'].choices = template_id_choices
 
     class Meta:
-        name = _("AddChain")
+        name = _("AddServiceChain")
         permissions = ('openstack.services.network',)
         help_text = _("Create a service chain based on this template. ")
 
 
-class AddChainStep(workflows.Step):
-    action_class = AddChainAction
-    contributes = ("name",)
+class AddServiceChainStep(workflows.Step):
+    action_class = AddServiceChainAction
+    contributes = ("name", "description", "service_chain_template_id", "source_network", "destination_network", "services_list")
 
     def contribute(self, data, context):
-        context = super(AddChainStep, self).contribute(data, context)
+        context = super(AddServiceChainStep, self).contribute(data, context)
         return context
 
 
-class AddChain(workflows.Workflow):
+class AddServiceChain(workflows.Workflow):
     slug = "addchain"
     name = _("Add Service Chain")
     finalize_button_name = _("Add")
     success_message = _('Added Service Chain "%s".')
     failure_message = _('Unable to add Service Chain "%s".')
     success_url = "horizon:project:servicechains:index"
-    default_steps = (AddChainStep,)
+    default_steps = (AddServiceChainStep,)
 
     def format_status_message(self, message):
         name = self.context.get('name')
@@ -110,7 +90,7 @@ class AddChain(workflows.Workflow):
 
     def handle(self, request, context):
         try:
-            chain = api.scaas.chain_create(request, **context)
+            chain = api.scaas.service_chain_create(request, **context)
             return True
         except:
             msg = self.format_status_message(self.failure_message)

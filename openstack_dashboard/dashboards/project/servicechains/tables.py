@@ -27,33 +27,14 @@ from openstack_dashboard import api
 LOG = logging.getLogger(__name__)
 
 
-class AddTemplateLink(tables.LinkAction):
-    name = "addtemplate"
-    verbose_name = _("Add Template")
-    url = "horizon:project:servicechains:addtemplate"
-    classes = ("btn-addtemplate",)
-
-
-class AddChainLink(tables.LinkAction):
+class AddServiceChainLink(tables.LinkAction):
     name = "addchain"
-    verbose_name = _("Create Chain from Template")
+    verbose_name = _("Create Chain")
+    url = "horizon:project:servicechains:addchain"
     classes = ("btn-addchain",)
 
-    def get_link_url(self, template):
-        base_url = reverse("horizon:project:servicechains:addchain",
-                           kwargs={'template_id': template.id})
-        return base_url
 
-
-class DeleteTemplateLink(tables.DeleteAction):
-    name = "deletetemplate"
-    action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
-    data_type_singular = _("Template")
-    data_type_plural = _("Templates")
-
-
-class DeleteChainLink(tables.DeleteAction):
+class DeleteServiceChainLink(tables.DeleteAction):
     name = "deletechain"
     action_present = _("Delete")
     action_past = _("Scheduled deletion of")
@@ -61,23 +42,44 @@ class DeleteChainLink(tables.DeleteAction):
     data_type_plural = _("Chains")
 
 
+class ManageResourcesLink(tables.LinkAction):
+    name = "managechain"
+    verbose_name = _("Manage Resources")
+    url = "horizon:project:servicechains:managechain"
+    classes = ("btn-managechain",)
+
+
 class TemplatesTable(tables.DataTable):
     name = tables.Column("name",
-                       verbose_name=_("Name"))
+                         verbose_name=_("Name"),
+                         link="horizon:project:servicechains:templatedetails")
+    description = tables.Column("description",
+                                verbose_name=_("Description"))
+    service_types_list = tables.Column("service_types_list",
+                                       verbose_name=_("Service Types"))
+
     class Meta:
         name = "templatestable"
         verbose_name = _("Templates")
-        table_actions = (AddTemplateLink, DeleteTemplateLink)
-        row_actions = (AddChainLink, DeleteTemplateLink)
 
 
-class ChainsTable(tables.DataTable):
+class ServiceChainsTable(tables.DataTable):
     name = tables.Column('name',
-                            verbose_name=_("Name"))
+                         verbose_name=_("Name"),
+                         link="horizon:project:servicechains:chaindetails")
+    description = tables.Column("description",
+                                verbose_name=_("Description"))
+    service_template_id = tables.Column("service_template_id",
+                                        verbose_name=_("Service Template"))
+    source_network = tables.Column("source_network",
+                                   verbose_name=_("Source Network"))
+    destination_network = tables.Column("destination_network",
+                                        verbose_name=_("Destination Network"))
+    services_list = tables.Column("services_list",
+                                  verbose_name=_("Services"))
 
     class Meta:
         name = "chainstable"
         verbose_name = _("Chains")
-        table_actions = (DeleteChainLink,)
-        row_actions = (DeleteChainLink,)
-
+        table_actions = (ManageResourcesLink, AddServiceChainLink, DeleteServiceChainLink)
+        row_actions = (DeleteServiceChainLink,)
