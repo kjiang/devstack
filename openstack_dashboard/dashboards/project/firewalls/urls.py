@@ -18,13 +18,16 @@ from django.conf.urls.defaults import url, patterns
 
 from .views import IndexView
 from .views import AddFirewallView
-from .views import PolicyDetailsView, FirewallDetailsView, ManageFirewallView
+from .views import PolicyDetailsView, FirewallDetailsView
+from .views import ManageFirewallView, RuleDetailsView
 
 urlpatterns = patterns(
     'openstack_dashboard.dashboards.project.firewalls.views',
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^managefirewall$', ManageFirewallView.as_view(), name='managefirewall'),
     url(r'^addfirewall$', AddFirewallView.as_view(), name='addfirewall'),
+    url(r'^rule/(?P<rule_id>[^/]+)/$',
+        RuleDetailsView.as_view(), name='ruledetails'),
     url(r'^policy/(?P<policy_id>[^/]+)/$',
         PolicyDetailsView.as_view(), name='policydetails'),
     url(r'^firewall/(?P<firewall_id>[^/]+)/$',

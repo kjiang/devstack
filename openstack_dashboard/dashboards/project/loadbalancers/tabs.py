@@ -27,13 +27,13 @@ from openstack_dashboard import api
 from .tables import LoadBalancersTable, PoolsTable, MembersTable, MonitorsTable
 
 
-class Lb():
-    id = 'id'
-    name = 'name'
+#class Lb():
+#    id = 'id'
+#    name = 'name'
 
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
+#    def __init__(self, id, name):
+#        self.id = id
+#        self.name = name
 
 
 class LoadBalancersTab(tabs.TableTab):

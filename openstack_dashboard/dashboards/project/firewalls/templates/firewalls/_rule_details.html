@@ -1,0 +1,39 @@
+{% load i18n sizeformat parse_date %}
+
+<div class="info row-fluid detail">
+  <hr class="header_rule">
+  <dl>
+    <dt>{% trans "ID: " %}</dt>
+    <dd>{{ rule.id }}</dd>
+
+    <dt>{% trans "Tenant ID: " %}</dt>
+    <dd>{{ rule.tenant_id }}</dd>
+
+    <dt>{% trans "Description: " %}</dt>
+    <dd>{{ rule.description }}</dd>
+
+    <dt>{% trans "Direction: " %}</dt>
+    <dd>{{ rule.direction }}</dd>
+
+    <dt>{% trans "Protocol: " %}</dt>
+    <dd>{{ rule.protocol }}</dd>
+
+    <dt>{% trans "Source: " %}</dt>
+    <dd>{{ rule.source_ip_address }}</dd>
+
+    <dt>{% trans "Destination: " %}</dt>
+    <dd>{{ rule.destination_ip_address }}</dd>
+    
+    <dt>{% trans "Port Range:" %}</dt>
+    <dd>[{{ rule.port_range_min }}, {{ rule.port_range_max }}]</dd>
+
+    <dt>{% trans "Application: " %}</dt>
+    <dd>{{ rule.application }}</dd>
+    
+    <dt>{% trans "Action: " %}</dt>
+    <dd>{{ rule.action }}</dd>
+
+    <dt>{% trans "Dynamic Attributes: " %}</dt>
+    <dd>{{ rule.dynamic_attributes }}</dd>
+  </dl>
+</div>

@@ -28,8 +28,8 @@ from horizon import workflows
 from openstack_dashboard import api
 
 from .workflows import AddFirewall
-from .tabs import Firewall, FirewallTabs
-from .tabs import PolicyDetailsTabs, FirewallDetailsTabs
+from .tabs import FirewallTabs
+from .tabs import PolicyDetailsTabs, RuleDetailsTabs, FirewallDetailsTabs
 from .tables import FirewallsTable
 
 LOG = logging.getLogger(__name__)
@@ -48,7 +48,6 @@ class IndexView(tables.DataTableView):
             fwsFormatted = []
             exceptions.handle(self.request,
                               _('Unable to retrieve firewall list.'))
-        fwsFormatted.append(Firewall('myid','myname', 'description', 'direction', 'firewall_policy_id'))
         return fwsFormatted
 
 
@@ -68,6 +67,11 @@ class AddFirewallView(workflows.WorkflowView):
     def get_initial(self):
         initial = super(AddFirewallView, self).get_initial()
         return initial
+
+
+class RuleDetailsView(tabs.TabView):
+    tab_group_class = (RuleDetailsTabs)
+    template_name = 'project/firewalls/details_tabs.html'
 
 
 class PolicyDetailsView(tabs.TabView):

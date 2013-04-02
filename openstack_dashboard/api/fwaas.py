@@ -24,7 +24,7 @@ class Rule(QuantumAPIDictWrapper):
     """Wrapper for quantum firewall policy"""
 
     def __init__(self, apiresource):
-        super(Policy, self).__init__(apiresource)
+        super(Rule, self).__init__(apiresource)
 
     class AttributeDict(dict):
         def __getattr__(self, attr):
@@ -35,7 +35,16 @@ class Rule(QuantumAPIDictWrapper):
 
     def readable(self, request):
         pFormatted = {'id': self.id,
-                      'name': self.name}
+                      'description': self.description,
+                      'direction': self.direction,
+                      'protocol': self.protocol,
+                      'source_ip_address': self.source_ip_address,
+                      'destination_ip_address': self.destination_ip_address,
+                      'port_range_min': self.port_range_min,
+                      'port_range_max': self.port_range_max,
+                      'application': self.application,
+                      'action': self.action,
+                      'dynamic_attributes': self.dynamic_attributes}
 
         return self.AttributeDict(pFormatted)
 
@@ -55,7 +64,10 @@ class Policy(QuantumAPIDictWrapper):
 
     def readable(self, request):
         pFormatted = {'id': self.id,
-                      'name': self.name}
+                      'name': self.name,
+                      'description': self.description,
+                      'firewall_rules_list': self.firewall_rules_list,
+                      'audited': self.audited}
 
         return self.AttributeDict(pFormatted)
 
@@ -75,8 +87,10 @@ class Firewall(QuantumAPIDictWrapper):
 
     def readable(self, request):
         mFormatted = {'id': self.id,
-                      'name': self.name}
-
+                      'name': self.name,
+                      'description': self.description,
+                      'firewall_policy_id': self.firewall_policy_id,
+                      'admin_state_up': self.admin_state_up}
         return self.AttributeDict(mFormatted)
 
 def firewall_rule_create(request, **kwargs):
@@ -172,7 +186,7 @@ def firewalls_get(request, **kwargs):
 
 def firewall_get(request, firewall_id):
     firewall = quantumclient(request).show_firewall(firewall_id).get('firewall')
-    return Rule(rule)
+    return Firewall(firewall)
 
 def firewall_delete(request, firewall_id):
     quantumclient(request).delete_firewall(firewall_id)

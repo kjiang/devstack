@@ -28,7 +28,7 @@ from horizon import workflows
 from openstack_dashboard import api
 
 from .workflows import AddLoadBalancer, AddPool, AddMember, AddMonitor, AddVip
-from .tabs import Lb, LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
+from .tabs import LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
 from .tabs import MemberDetailsTabs, MonitorDetailsTabs, LbDetailsTabs
 from .tables import LoadBalancersTable, DeleteMonitorLink
 
@@ -48,7 +48,6 @@ class IndexView(tables.DataTableView):
             lbsFormatted = []
             exceptions.handle(self.request,
                               _('Unable to retrieve loadbalancer list.'))
-        lbsFormatted.append(Lb('myid','myname'))
         return lbsFormatted
 
     def post(self, request, *args, **kwargs):

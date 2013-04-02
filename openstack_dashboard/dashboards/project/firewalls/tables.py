@@ -54,7 +54,8 @@ class ManageResourcesLink(tables.LinkAction):
 
 class RulesTable(tables.DataTable):
     description = tables.Column("description",
-                                verbose_name=_("Description"))
+                                verbose_name=_("Description"),
+                                link="horizon:project:firewalls:ruledetails")
     direction = tables.Column("direction",
                               verbose_name=_("Direction"))
     protocol = tables.Column("protocol",
@@ -78,7 +79,8 @@ class RulesTable(tables.DataTable):
 
 class PoliciesTable(tables.DataTable):
     name = tables.Column("name",
-                         verbose_name=_("Name"))
+                         verbose_name=_("Name"),
+                         link="horizon:project:firewalls:policydetails")
     description = tables.Column("description",
                                 verbose_name=_("Description"))
     firewall_rules_list = tables.Column("firewall_rules_list",

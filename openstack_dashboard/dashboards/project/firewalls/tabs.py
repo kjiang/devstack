@@ -27,39 +27,6 @@ from openstack_dashboard import api
 from .tables import RulesTable, PoliciesTable, FirewallsTable
 
 
-class Rule():
-    id = 'id'
-    description = 'description'
-
-    def __init__(self, id, description):
-        self.id = id
-        self.description = description
-
-
-class Policy():
-    id = 'id'
-    name = 'name'
-
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-
-
-class Firewall():
-    id = 'id'
-    name = 'name'
-    description = 'description'
-    direction = 'direction'
-    firewall_policy_id = 'firewall_policy_id'
-
-    def __init__(self, id, name, description, direction, policy):
-        self.id = id
-        self.name = name
-        self.description = description
-        self.direction = direction
-        self.firewall_policy_id = policy
-
-
 class RulesTab(tabs.TableTab):
     table_classes = (RulesTable,)
     name = _("Rules")
@@ -75,7 +42,6 @@ class RulesTab(tabs.TableTab):
             rulesFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve rules list.'))
-        rulesFormatted.append(Rule('myid','myname'))
         return rulesFormatted
 
 
@@ -94,7 +60,6 @@ class PoliciesTab(tabs.TableTab):
             policiesFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve policies list.'))
-        policiesFormatted.append(Policy('myid','myname')) 
         return policiesFormatted
 
 
@@ -110,9 +75,9 @@ class RuleDetailsTab(tabs.Tab):
     template_name = "project/firewalls/_rule_details.html"
 
     def get_context_data(self, request):
-        fid = self.tab_group.kwargs['firewall_rule_id']
+        fid = self.tab_group.kwargs['rule_id']
         try:
-            rule = api.fwaas.firewall_policy_get(request, fid)
+            rule = api.fwaas.firewall_rule_get(request, fid)
         except:
             rule = []
             exceptions.handle(request,
@@ -126,7 +91,7 @@ class PolicyDetailsTab(tabs.Tab):
     template_name = "project/firewalls/_policy_details.html"
 
     def get_context_data(self, request):
-        fid = self.tab_group.kwargs['firewall_policy_id']
+        fid = self.tab_group.kwargs['policy_id']
         try:
             policy = api.fwaas.firewall_policy_get(request, fid)
         except:
