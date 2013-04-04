@@ -28,7 +28,7 @@ from horizon import workflows
 from openstack_dashboard import api
 
 from .workflows import AddServiceChain
-from .tabs import ServiceChainTabs, ServiceChain
+from .tabs import ServiceChainTabs
 from .tabs import ServiceChainTemplateDetailsTabs, ServiceChainDetailsTabs
 from .tables import ServiceChainsTable
 
@@ -48,7 +48,7 @@ class IndexView(tables.DataTableView):
             scsFormatted = []
             exceptions.handle(self.request,
                               _('Unable to retrieve service chain list.'))
-        scsFormatted.append(ServiceChain('myid','myname'))
+        #scsFormatted.append(ServiceChain('myid','myname'))
         return scsFormatted
 
 

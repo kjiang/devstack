@@ -33,14 +33,13 @@ LOG = logging.getLogger(__name__)
 class AddServiceChainAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(max_length=80, label=_("Description"), required=False, initial='')
-    service_chain_template_id = forms.ChoiceField(label=_("Service Chain Template"))
-    source_network = forms.CharField(max_length=80, label=_("Source Network"))
-    destination_network = forms.CharField(max_length=80, label=_("Destination Network"))
-    services_list = forms.MultipleChoiceField(label=_("Service(s)"),
-                                              required=False,
-                                              initial=["default"],
+    template_id = forms.ChoiceField(label=_("Service Chain Template"))
+    source_network_id = forms.ChoiceField(label=_("Source Network"),)
+    destination_network_id = forms.ChoiceField(label=_("Destination Network"),)
+    services_list = forms.MultipleChoiceField(label=_("Services"),
+                                              required=True,
                                               widget=forms.CheckboxSelectMultiple(),
-                                              help_text=_("Select services for this chain."))
+                                              help_text=_("Select Services for Chosen Template."))
     admin_state_up = forms.BooleanField(label=_("Admin State"),
                                         initial=True, required=False)
 
@@ -56,9 +55,44 @@ class AddServiceChainAction(workflows.Action):
             templates = []
         for t in templates:
             template_id_choices.append((t.id, t.name))
-        template_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16be', 'template 1'))
-        template_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16ce', 'template 2'))
-        self.fields['service_chain_template_id'].choices = template_id_choices
+        self.fields['template_id'].choices = template_id_choices
+
+        tenant_id = request.user.tenant_id
+        source_network_choices = [('', _("Select a Network"))]
+        destination_network_choices = [('', _("Select a Network"))]
+        try:
+            networks = api.quantum.network_list_for_tenant(request, tenant_id)
+        except:
+            exceptions.handle(request,
+                              _('Unable to retrieve networks list.'))
+            networks = []
+        for n in networks:
+            for s in n['subnets']:
+                source_network_choices.append((s.id, s.cidr))
+                destination_network_choices.append((s.id, s.cidr))
+        self.fields['source_network_id'].choices = source_network_choices
+        self.fields['destination_network_id'].choices = destination_network_choices
+
+        try:
+            fws = api.fwaas.firewalls_get(request)
+        except:
+            exceptions.handle(request,
+                              _('Unable to retrieve firewalls list.'))
+            fws = []
+        try:
+            lbs = api.lbaas.loadbalancers_get(request)
+        except:
+            exceptions.handle(request,
+                              _('Unable to retrieve loadbalancers list.'))
+            lbs= []
+            
+        services_list_choices = []
+        for f in fws:
+            services_list_choices.append((f.id, f.name))
+        for l in lbs:
+            services_list_choices.append((l.id, l.name))
+
+        self.fields['services_list'].choices = services_list_choices
 
     class Meta:
         name = _("AddServiceChain")
@@ -68,7 +102,7 @@ class AddServiceChainAction(workflows.Action):
 
 class AddServiceChainStep(workflows.Step):
     action_class = AddServiceChainAction
-    contributes = ("name", "description", "service_chain_template_id", "source_network", "destination_network", "services_list")
+    contributes = ("name", "description", "template_id", "source_network_id", "destination_network_id", "services_list")
 
     def contribute(self, data, context):
         context = super(AddServiceChainStep, self).contribute(data, context)

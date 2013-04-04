@@ -55,8 +55,8 @@ class TemplatesTable(tables.DataTable):
                          link="horizon:project:servicechains:templatedetails")
     description = tables.Column("description",
                                 verbose_name=_("Description"))
-    service_types_list = tables.Column("service_types_list",
-                                       verbose_name=_("Service Types"))
+    services_types_list = tables.Column("services_types_list",
+                                        verbose_name=_("Service Types"))
 
     class Meta:
         name = "templatestable"
