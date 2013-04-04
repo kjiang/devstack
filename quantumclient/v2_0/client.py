@@ -185,10 +185,10 @@ class Client(object):
     rule_path = "/firewall/firewall_rules/%s"
     policies_path = "/firewall/firewall_policies"
     policy_path = "/firewall/firewall_policies/%s"
-    templates_path = "/service_chain_templatess"
-    template_path = "/service_chain_templates/%s"
-    service_chains_path = "/service_chains"
-    service_chain_path = "/service_chains/%s"
+    templates_path = "/service-chain-templates"
+    template_path = "/service-chain-templates/%s"
+    service_chains_path = "/service-chains"
+    service_chain_path = "/service-chains/%s"
 
     DHCP_NETS = '/dhcp-networks'
     DHCP_AGENTS = '/dhcp-agents'
