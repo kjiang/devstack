@@ -49,16 +49,12 @@ class AddFirewallAction(workflows.Action):
             policies = []
         for p in policies:
             policy_id_choices.append((p.id, p.name))
-        policy_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16be', 'policy 1'))
-        policy_id_choices.append(('e5cb1e5f-c41f-4c85-a787-206f9afb16ce', 'policy 2'))
         self.fields['firewall_policy_id'].choices = policy_id_choices
 
     class Meta:
         name = _("AddFirewall")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall based on this policy. ")
-        #help_text_template = ("project/firewalls/"
-        #                      "_launch_details_help.html")
 
 class AddFirewallStep(workflows.Step):
     action_class = AddFirewallAction
