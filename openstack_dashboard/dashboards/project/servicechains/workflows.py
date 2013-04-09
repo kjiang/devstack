@@ -67,9 +67,8 @@ class AddServiceChainAction(workflows.Action):
                               _('Unable to retrieve networks list.'))
             networks = []
         for n in networks:
-            for s in n['subnets']:
-                source_network_choices.append((s.id, s.cidr))
-                destination_network_choices.append((s.id, s.cidr))
+            source_network_choices.append((n.id, n.name))
+            destination_network_choices.append((n.id, n.name))
         self.fields['source_network_id'].choices = source_network_choices
         self.fields['destination_network_id'].choices = destination_network_choices
 
