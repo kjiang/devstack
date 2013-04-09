@@ -15,22 +15,14 @@
     <dt>{% trans "Description: " %}</dt>
     <dd>{{ chain.description }}</dd>
 
-    <dt>{% trans "Template ID: " %}</dt>
-    <dd>{{ chain.service_chain_template_id }}</dd>
-
     <dt>{% trans "Source Network: " %}</dt>
-    <dd>{{ chain.source_network }}</dd>
+    <dd>{{ chain.source_network_id }}</dd>
 
     <dt>{% trans "Destination Network: " %}</dt>
-    <dd>{{ chain.destination_network }}</dd>
+    <dd>{{ chain.destination_network_id }}</dd>
 
     <dt>{% trans "List of Services: " %}</dt>
     <dd>{{ chain.services_list }}</dd>
 
-    <dt>{% trans "Admin State: " %}</dt>
-    <dd>{{ chain.admin_state_up }}</dd>
-
-    <dt>{% trans "Status: " %}</dt>
-    <dd>{{ chain.status }}</dd>
   </dl>
 </div>

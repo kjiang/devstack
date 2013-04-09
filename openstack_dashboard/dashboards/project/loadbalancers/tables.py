@@ -29,7 +29,7 @@ LOG = logging.getLogger(__name__)
 
 class AddLoadBalancerLink(tables.LinkAction):
     name = "addloadbalancer"
-    verbose_name = _("Add Load Balancer")
+    verbose_name = _("Create Load Balancer")
     url = "horizon:project:loadbalancers:addloadbalancer"
     classes = ("btn-addloadbalancer",)
 

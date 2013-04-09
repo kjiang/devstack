@@ -26,21 +26,6 @@ from openstack_dashboard import api
 
 from .tables import TemplatesTable, ServiceChainsTable
 
-#class ServiceChainTemplate():
-#    id = 'id'
-#    name = 'name'
-
-#    def __init__(self, id, name):
-#        self.id = id
-#        self.name = name
-
-#class ServiceChain():
-#    id = 'id'
-#    name = 'name'
-
-#    def __init__(self, id, name):
-#        self.id = id
-#        self.name = name
 
 class TemplatesTab(tabs.TableTab):
     table_classes = (TemplatesTable,)
@@ -57,7 +42,6 @@ class TemplatesTab(tabs.TableTab):
             templatesFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve templates list.'))
-        #templatesFormatted.append(ServiceChainTemplate('myid', 'myname'))
         return templatesFormatted
 
 
@@ -76,7 +60,6 @@ class ServiceChainsTab(tabs.TableTab):
             chainsFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve service chains list.'))
-        #chainsFormatted.append(ServiceChain('myid', 'myname'))
         return chainsFormatted
 
 

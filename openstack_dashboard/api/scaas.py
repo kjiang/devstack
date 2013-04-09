@@ -57,8 +57,11 @@ class ServiceChain(QuantumAPIDictWrapper):
 
     def readable(self, request):
         mFormatted = {'id': self.id,
-                      'name': self.name}
-
+                      'name': self.name,
+                      'description': self.description,
+                      'source_network_id': self.source_network_id,
+                      'destination_network_id': self.destination_network_id,
+                      'services_list': self.services_list}
         return self.AttributeDict(mFormatted)
 
 

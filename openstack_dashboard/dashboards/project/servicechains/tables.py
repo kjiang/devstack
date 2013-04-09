@@ -41,6 +41,8 @@ class DeleteServiceChainLink(tables.DeleteAction):
     data_type_singular = _("Chain")
     data_type_plural = _("Chains")
 
+    def action(self, request, obj_id):
+        api.scaas.service_chain_delete(request, obj_id)
 
 class ManageResourcesLink(tables.LinkAction):
     name = "managechain"
@@ -69,11 +71,9 @@ class ServiceChainsTable(tables.DataTable):
                          link="horizon:project:servicechains:chaindetails")
     description = tables.Column("description",
                                 verbose_name=_("Description"))
-    service_template_id = tables.Column("service_template_id",
-                                        verbose_name=_("Service Template"))
-    source_network = tables.Column("source_network",
+    source_network_id = tables.Column("source_network_id",
                                    verbose_name=_("Source Network"))
-    destination_network = tables.Column("destination_network",
+    destination_network_id = tables.Column("destination_network_id",
                                         verbose_name=_("Destination Network"))
     services_list = tables.Column("services_list",
                                   verbose_name=_("Services"))
