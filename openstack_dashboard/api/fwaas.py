@@ -65,14 +65,18 @@ class Policy(QuantumAPIDictWrapper):
             self[attr] = value
 
     def readable(self, request):
-        rule_list_str = json.dumps(self.firewall_rules_list)
         pFormatted = {'id': self.id,
                       'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
-                      'firewall_rules_list': rule_list_str,
                       'audited': self.audited}
-
+        pFormatted['firewall_rules_list'] = []
+        for f in self.firewall_rules_list:
+            try:
+                rule = firewall_rule_get(request, f)
+                pFormatted['firewall_rules_list'].append( json.dumps(rule.description) )
+            except:
+                pass
         return self.AttributeDict(pFormatted)
 
 
@@ -91,10 +95,18 @@ class Firewall(QuantumAPIDictWrapper):
 
     def readable(self, request):
         mFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
                       'firewall_policy_id': self.firewall_policy_id,
-                      'admin_state_up': self.admin_state_up}
+                      'admin_state_up': self.admin_state_up,
+                      'status': self.status}
+        try:
+            policy = firewall_policy_get(request, self.firewall_policy_id)
+            mFormatted['firewall_policy_name'] = policy.name
+        except:
+            mFormatted['firewall_policy_name'] = self.firewall_policy_id
+
         return self.AttributeDict(mFormatted)
 
 def firewall_rule_create(request, **kwargs):

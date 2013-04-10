@@ -16,6 +16,7 @@
 
 import logging
 import re
+from netaddr import all_matching_cidrs
 
 from django.utils.translation import ugettext as _
 
@@ -225,9 +226,7 @@ class AddVipAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(AddVipAction, self).__init__(request, *args, **kwargs)
 
-        self.fields['other_address'].label = _("Specify a free IP address"
-                                               " from %s" %
-                                               args[0]['subnet'])
+        self.fields['other_address'].label = _("Specify a free IP address")
 
         protocol_choices = [('', _("Select a Protocol"))]
         protocol_choices.append(('HTTP', 'HTTP'))
@@ -292,8 +291,17 @@ class AddVip(workflows.Workflow):
             else:
                 context['address'] = context['other_address']
         try:
-            pool = api.lbaas.pool_get(request, context['pool_id'])
-            context['subnet_id'] = pool['subnet_id']
+            tenant_id = request.user.tenant_id
+            nets = api.quantum.network_list_for_tenant(request, tenant_id)
+            context['subnet_id'] = None
+            for n in nets:
+                if not context['subnet_id'] == None:
+                    break
+                for s in n['subnets']:
+                    match = all_matching_cidrs(context['address'], [s.cidr])
+                    if not match == []:
+                        context['subnet_id'] = s.id
+                        break
         except:
             context['subnet_id'] = None
             exceptions.handle(request,

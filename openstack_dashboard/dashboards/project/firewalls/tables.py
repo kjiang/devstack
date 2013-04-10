@@ -93,6 +93,8 @@ class PoliciesTable(tables.DataTable):
                                 verbose_name=_("Description"))
     firewall_rules_list = tables.Column("firewall_rules_list",
                                    verbose_name=_("Firewall Rules"))
+    audited = tables.Column("audited",
+                           verbose_name=_("Audited"))
     class Meta:
         name = "policiestable"
         verbose_name = _("Policies")
@@ -105,8 +107,8 @@ class FirewallsTable(tables.DataTable):
                          link="horizon:project:firewalls:firewalldetails")
     description = tables.Column("description",
                                 verbose_name=_("Description"))
-    firewall_policy_id = tables.Column("firewall_policy_id",
-                                   verbose_name=_("Firewall Policy ID"))
+    firewall_policy = tables.Column("firewall_policy",
+                                    verbose_name=_("Policy"))
 
     class Meta:
         name = "firewallstable"

@@ -27,15 +27,6 @@ from openstack_dashboard import api
 from .tables import LoadBalancersTable, PoolsTable, MembersTable, MonitorsTable
 
 
-#class Lb():
-#    id = 'id'
-#    name = 'name'
-
-#    def __init__(self, id, name):
-#        self.id = id
-#        self.name = name
-
-
 class LoadBalancersTab(tabs.TableTab):
     table_classes = (LoadBalancersTable,)
     name = _("LoadBalancers")
@@ -127,7 +118,7 @@ class LbDetailsTab(tabs.Tab):
             lb = []
             exceptions.handle(request,
                               _('Unable to retrieve load balancer details.'))
-        return {'lb': lb}
+        return {'lb': lb.readable(request)}
 
 
 class PoolDetailsTab(tabs.Tab):
@@ -143,7 +134,7 @@ class PoolDetailsTab(tabs.Tab):
             pool = []
             exceptions.handle(request,
                               _('Unable to retrieve pool details.'))
-        return {'pool': pool}
+        return {'pool': pool.readable(request)}
 
 
 class VipDetailsTab(tabs.Tab):

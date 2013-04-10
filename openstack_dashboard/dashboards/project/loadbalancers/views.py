@@ -43,7 +43,7 @@ class IndexView(tables.DataTableView):
         try:
             lbs = api.lbaas.loadbalancers_get(self.request)
             lbsFormatted = [l.readable(self.request) for
-                                l in lbs]
+                            l in lbs]
         except:
             lbsFormatted = []
             exceptions.handle(self.request,

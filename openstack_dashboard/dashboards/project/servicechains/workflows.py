@@ -34,8 +34,8 @@ class AddServiceChainAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(max_length=80, label=_("Description"), required=False, initial='')
     template_id = forms.ChoiceField(label=_("Service Chain Template"))
-    source_network_id = forms.ChoiceField(label=_("Source Network"),)
-    destination_network_id = forms.ChoiceField(label=_("Destination Network"),)
+    source_network_id = forms.ChoiceField(label=_("Source Network"), required=False)
+    destination_network_id = forms.ChoiceField(label=_("Destination Network"), required=False)
     services_list = forms.MultipleChoiceField(label=_("Services"),
                                               required=True,
                                               widget=forms.CheckboxSelectMultiple(),

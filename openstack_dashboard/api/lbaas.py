@@ -20,6 +20,7 @@ from openstack_dashboard.api.quantum import QuantumAPIDictWrapper
 from openstack_dashboard.api.quantum import quantumclient
 from openstack_dashboard.api.quantum import subnet_get
 
+import json
 
 class Lb(QuantumAPIDictWrapper):
     """Wrapper for quantum load balancer vip"""
@@ -36,10 +37,17 @@ class Lb(QuantumAPIDictWrapper):
 
     def readable(self, request):
         pFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
-                      'vips_list': self.vips_list,
                       'admin_state_up': self.admin_state_up}
+        pFormatted['vips_list'] = []
+        for v in self.vips_list:
+            try:
+                vip = vip_get(request, v)
+                pFormatted['vips_list'].append(json.dumps(vip.name)+": "+ json.dumps(vip.address))
+            except:
+                pass
         return self.AttributeDict(pFormatted)
 
 class Vip(QuantumAPIDictWrapper):
@@ -64,6 +72,14 @@ class Pool(QuantumAPIDictWrapper):
 
     def readable(self, request):
         pFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
+                      'lb_method': self.lb_method,
+                      'vip_id': self.vip_id,
+                      'members': json.dumps(self.members),
+                      'member_count': len(self.members),
+                      'health_monitors': json.dumps(self.health_monitors),
+                      'admin_state_up': self.admin_state_up,
+                      'status': self.status,
                       'name': self.name,
                       'description': self.description,
                       'protocol': self.protocol}
@@ -75,18 +91,13 @@ class Pool(QuantumAPIDictWrapper):
             pFormatted['subnet_id'] = self.subnet_id
             pFormatted['subnet_name'] = self.subnet_id
 
+        pFormatted['vip_name'] = self.vip_id
         if self.vip_id is not None:
             try:
-                pFormatted['vip_id'] = self.vip_id
-                pFormatted['vip_name'] = vip_get(
-                    request, self.vip_id).name
+                vip = vip_get(request, self.vip_id)
+                pFormatted['vip_name'] = vip.name + ": " + vip.address
             except:
-                pFormatted['vip_id'] = self.vip_id
-                pFormatted['vip_name'] = self.vip_id
-        else:
-            pFormatted['vip_id'] = None
-            pFormatted['vip_name'] = None
-
+                pass
         return self.AttributeDict(pFormatted)
 
 

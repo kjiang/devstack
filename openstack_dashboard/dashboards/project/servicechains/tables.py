@@ -78,10 +78,10 @@ class ServiceChainsTable(tables.DataTable):
                          link="horizon:project:servicechains:chaindetails")
     description = tables.Column("description",
                                 verbose_name=_("Description"))
-    source_network_id = tables.Column("source_network_id",
-                                   verbose_name=_("Source Network"))
-    destination_network_id = tables.Column("destination_network_id",
-                                        verbose_name=_("Destination Network"))
+    source_network_name = tables.Column("source_network_name",
+                                        verbose_name=_("Source Network"))
+    destination_network_id = tables.Column("destination_network_name",
+                                           verbose_name=_("Destination Network"))
     services_list = tables.Column("services_list",
                                   verbose_name=_("Services"))
 

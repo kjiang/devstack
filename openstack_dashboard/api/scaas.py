@@ -18,6 +18,9 @@ from __future__ import absolute_import
 
 from openstack_dashboard.api.quantum import QuantumAPIDictWrapper
 from openstack_dashboard.api.quantum import quantumclient
+from openstack_dashboard.api.quantum import network_get
+from openstack_dashboard.api.lbaas import loadbalancer_get
+from openstack_dashboard.api.fwaas import firewall_get
 
 import json
 
@@ -59,14 +62,37 @@ class ServiceChain(QuantumAPIDictWrapper):
             self[attr] = value
 
     def readable(self, request):
-        services_list_str = json.dumps(self.services_list)
         mFormatted = {'id': self.id,
                       'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
                       'source_network_id': self.source_network_id,
-                      'destination_network_id': self.destination_network_id,
-                      'services_list': services_list_str}
+                      'destination_network_id': self.destination_network_id}
+
+        mFormatted['services_list'] = []
+        for s in self.services_list:
+            try:
+                fw = firewall_get(request, s)
+                mFormatted['services_list'].append(json.dumps(fw.name))
+            except:
+                fw = {}
+            try:
+                lb = loadbalancer_get(request, s)
+                mFormatted['services_list'].append(json.dumps(lb.name))
+            except:
+                lb = {}
+
+        try:
+            mFormatted['source_network_name'] = network_get(
+                request, self.source_network_id).name
+        except:
+            mFormatted['source_network_name'] = self.source_network_id
+
+        try:
+            mFormatted['destination_network_name'] = network_get(
+                request, self.destination_network_id).name
+        except:
+            mFormatted['destination_network_name'] = self.destination_network_id
         return self.AttributeDict(mFormatted)
 
 

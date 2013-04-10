@@ -136,6 +136,8 @@ class LoadBalancersTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
                          link="horizon:project:loadbalancers:lbdetails")
+    vips_list = tables.Column('vips_list', verbose_name=_("VIPs"))
+
     class Meta:
         name = "loadbalancerstable"
         verbose_name = _("Load Balancers")
@@ -150,6 +152,7 @@ class PoolsTable(tables.DataTable):
     description = tables.Column('description', verbose_name=_("Description"))
     subnet_name = tables.Column('subnet_name', verbose_name=_("Subnet"))
     protocol = tables.Column('protocol', verbose_name=_("Protocol"))
+    member_count = tables.Column('member_count', verbose_name=_("No. of Members"))
     vip_name = tables.Column('vip_name', verbose_name=_("VIP"),
                              link=get_vip_link)
 

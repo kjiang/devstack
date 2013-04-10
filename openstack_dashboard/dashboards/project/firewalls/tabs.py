@@ -116,7 +116,7 @@ class FirewallDetailsTab(tabs.Tab):
             firewall = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve firewall details.'))
-        return {'firewall': firewall}
+        return {'firewall': firewall.readable(request)}
 
 
 class RuleDetailsTabs(tabs.TabGroup):
