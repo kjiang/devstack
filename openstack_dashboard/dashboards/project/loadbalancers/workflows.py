@@ -42,8 +42,6 @@ class AddLoadBalancerAction(workflows.Action):
                                           initial=["default"],
                                           widget=forms.CheckboxSelectMultiple(),
                                           help_text=_("Select Vips for this load balancer."))
-    protocol_port = forms.CharField(max_length=80, label=_("Protocol Port"),
-                                    required = False)
     admin_state_up = forms.BooleanField(label=_("Admin State"),
                                         initial=True, required=False)
 
