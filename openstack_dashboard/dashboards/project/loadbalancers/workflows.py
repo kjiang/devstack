@@ -211,6 +211,8 @@ class AddVipAction(workflows.Action):
                                    mask=False)
     protocol_port = forms.CharField(max_length=80, label=_("Protocol Port"))
     protocol = forms.ChoiceField(label=_("Protocol"))
+    connection_limit = forms.CharField(
+        max_length=80, label=_("Connection Limit"))
     session_persistence = forms.ChoiceField(
         required=False, initial={}, label=_("Session Persistence"))
     cookie_name = forms.CharField(
@@ -218,8 +220,6 @@ class AddVipAction(workflows.Action):
         max_length=80, label=_("Cookie Name"),
         help_text=_("Required for APP_COOKIE persistence;"
                     " Ignored otherwise."))
-    connection_limit = forms.CharField(
-        max_length=80, label=_("Connection Limit"))
     admin_state_up = forms.BooleanField(
         label=_("Admin State"), initial=True, required=False)
 
