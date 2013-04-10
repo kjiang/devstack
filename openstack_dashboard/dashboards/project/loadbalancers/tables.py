@@ -33,6 +33,12 @@ class AddLoadBalancerLink(tables.LinkAction):
     url = "horizon:project:loadbalancers:addloadbalancer"
     classes = ("btn-addloadbalancer",)
 
+class ReturnToIndexLink(tables.LinkAction):
+    name = "returnindex"
+    verbose_name = _("Active Load Balancers")
+    url = "horizon:project:loadbalancers:index"
+    classes = ("btn-returnindex",)
+
 class ManageResourcesLink(tables.LinkAction):
     name = "manageresources"
     verbose_name = _("Manage Resources")
@@ -150,7 +156,7 @@ class PoolsTable(tables.DataTable):
     class Meta:
         name = "poolstable"
         verbose_name = _("Pools")
-        table_actions = (AddPoolLink, DeletePoolLink)
+        table_actions = (AddPoolLink, DeletePoolLink, AddLoadBalancerLink, ReturnToIndexLink)
         row_actions = (AddVipLink, DeleteVipLink, DeletePoolLink)
 
 
@@ -176,7 +182,7 @@ class MembersTable(tables.DataTable):
     class Meta:
         name = "memberstable"
         verbose_name = _("Members")
-        table_actions = (AddMemberLink, DeleteMemberLink)
+        table_actions = (AddMemberLink, DeleteMemberLink, AddLoadBalancerLink, ReturnToIndexLink)
         row_actions = (DeleteMemberLink,)
 
 
@@ -189,5 +195,5 @@ class MonitorsTable(tables.DataTable):
     class Meta:
         name = "monitorstable"
         verbose_name = _("Monitors")
-        table_actions = (AddMonitorLink, DeleteMonitorLink)
+        table_actions = (AddMonitorLink, DeleteMonitorLink, AddLoadBalancerLink, ReturnToIndexLink)
         row_actions = (DeleteMonitorLink,)

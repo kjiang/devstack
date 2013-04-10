@@ -19,6 +19,7 @@ from __future__ import absolute_import
 from openstack_dashboard.api.quantum import QuantumAPIDictWrapper
 from openstack_dashboard.api.quantum import quantumclient
 
+import json
 
 class ServiceChainTemplate(QuantumAPIDictWrapper):
     """Wrapper for quantum service chain template"""
@@ -34,10 +35,12 @@ class ServiceChainTemplate(QuantumAPIDictWrapper):
             self[attr] = value
 
     def readable(self, request):
+        services_list_str = json.dumps(self.services_types_list)
         pFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
-                      'services_types_list': self.services_types_list}
+                      'services_types_list': services_list_str}
 
         return self.AttributeDict(pFormatted)
 
@@ -56,12 +59,14 @@ class ServiceChain(QuantumAPIDictWrapper):
             self[attr] = value
 
     def readable(self, request):
+        services_list_str = json.dumps(self.services_list)
         mFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
                       'source_network_id': self.source_network_id,
                       'destination_network_id': self.destination_network_id,
-                      'services_list': self.services_list}
+                      'services_list': services_list_str}
         return self.AttributeDict(mFormatted)
 
 

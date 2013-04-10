@@ -45,9 +45,16 @@ class DeleteFirewallLink(tables.DeleteAction):
         api.fwaas.firewall_delete(request, obj_id)
 
 
+class ReturnToIndexLink(tables.LinkAction):
+    name = "returnindex"
+    verbose_name = _("Active Firewalls")
+    url = "horizon:project:firewalls:index"
+    classes = ("btn-returnindex",)
+
+
 class ManageResourcesLink(tables.LinkAction):
     name = "manageresources"
-    verbose_name = _("Manage Firewall Resources")
+    verbose_name = _("Manage Resources")
     url = "horizon:project:firewalls:managefirewall"
     classes = ("btn-managefirewall",)
 
@@ -75,7 +82,8 @@ class RulesTable(tables.DataTable):
     class Meta:
         name = "rulestable"
         verbose_name = _("Rules")
-
+        table_actions = (AddFirewallLink, ReturnToIndexLink)
+        multi_select = False
 
 class PoliciesTable(tables.DataTable):
     name = tables.Column("name",
@@ -88,7 +96,8 @@ class PoliciesTable(tables.DataTable):
     class Meta:
         name = "policiestable"
         verbose_name = _("Policies")
-
+        table_actions = (AddFirewallLink, ReturnToIndexLink)
+        multi_select = False
 
 class FirewallsTable(tables.DataTable):
     name = tables.Column("name",

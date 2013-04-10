@@ -78,11 +78,12 @@ class RuleDetailsTab(tabs.Tab):
         fid = self.tab_group.kwargs['rule_id']
         try:
             rule = api.fwaas.firewall_rule_get(request, fid)
+            ruleFormatted = rule.readable(request)
         except:
-            rule = []
+            ruleFormatted = []
             exceptions.handle(request,
                               _('Unable to retrieve policy details.'))
-        return {'rule': rule}
+        return {'rule': ruleFormatted}
 
 
 class PolicyDetailsTab(tabs.Tab):
@@ -94,11 +95,12 @@ class PolicyDetailsTab(tabs.Tab):
         fid = self.tab_group.kwargs['policy_id']
         try:
             policy = api.fwaas.firewall_policy_get(request, fid)
+            policyFormatted = policy.readable(request)
         except:
-            policy = []
+            policyFormatted = []
             exceptions.handle(request,
                               _('Unable to retrieve policy details.'))
-        return {'policy': policy}
+        return {'policy': policyFormatted}
 
 
 class FirewallDetailsTab(tabs.Tab):

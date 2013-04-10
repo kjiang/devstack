@@ -44,6 +44,12 @@ class DeleteServiceChainLink(tables.DeleteAction):
     def action(self, request, obj_id):
         api.scaas.service_chain_delete(request, obj_id)
 
+class ReturnToIndexLink(tables.LinkAction):
+    name = "returnindex"
+    verbose_name = _("Active Service Chains")
+    url = "horizon:project:servicechains:index"
+    classes = ("btn-returnindex",)
+
 class ManageResourcesLink(tables.LinkAction):
     name = "managechain"
     verbose_name = _("Manage Resources")
@@ -63,7 +69,8 @@ class TemplatesTable(tables.DataTable):
     class Meta:
         name = "templatestable"
         verbose_name = _("Templates")
-
+        table_actions = (AddServiceChainLink, ReturnToIndexLink)
+        multi_select = False
 
 class ServiceChainsTable(tables.DataTable):
     name = tables.Column('name',

@@ -19,6 +19,7 @@ from __future__ import absolute_import
 from openstack_dashboard.api.quantum import QuantumAPIDictWrapper
 from openstack_dashboard.api.quantum import quantumclient
 
+import json
 
 class Rule(QuantumAPIDictWrapper):
     """Wrapper for quantum firewall policy"""
@@ -35,6 +36,7 @@ class Rule(QuantumAPIDictWrapper):
 
     def readable(self, request):
         pFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
                       'description': self.description,
                       'direction': self.direction,
                       'protocol': self.protocol,
@@ -63,10 +65,12 @@ class Policy(QuantumAPIDictWrapper):
             self[attr] = value
 
     def readable(self, request):
+        rule_list_str = json.dumps(self.firewall_rules_list)
         pFormatted = {'id': self.id,
+                      'tenant_id': self.tenant_id,
                       'name': self.name,
                       'description': self.description,
-                      'firewall_rules_list': self.firewall_rules_list,
+                      'firewall_rules_list': rule_list_str,
                       'audited': self.audited}
 
         return self.AttributeDict(pFormatted)

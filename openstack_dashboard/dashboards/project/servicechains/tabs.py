@@ -78,11 +78,12 @@ class ServiceChainTemplateDetailsTab(tabs.Tab):
         tid = self.tab_group.kwargs['template_id']
         try:
             template = api.scaas.service_chain_template_get(request, tid)
+            templateFormatted = template.readable(request)
         except:
-            template = []
+            templateFormatted = []
             exceptions.handle(request,
                               _('Unable to retrieve template details.'))
-        return {'template': template}
+        return {'template': templateFormatted}
 
 
 class ServiceChainDetailsTab(tabs.Tab):
@@ -94,11 +95,12 @@ class ServiceChainDetailsTab(tabs.Tab):
         sid = self.tab_group.kwargs['chain_id']
         try:
             chain = api.scaas.service_chain_get(request, sid)
+            chainFormatted = chain.readable(self.tab_group.request)
         except:
-            chain = []
+            chainFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve service chain details.'))
-        return {'chain': chain}
+        return {'chain': chainFormatted}
 
 
 class ServiceChainTemplateDetailsTabs(tabs.TabGroup):
