@@ -34,8 +34,8 @@ class AddServiceChainAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(max_length=80, label=_("Description"), required=False, initial='')
     template_id = forms.ChoiceField(label=_("Service Chain Template"))
-    source_network_id = forms.ChoiceField(label=_("Source Network"), required=False)
-    destination_network_id = forms.ChoiceField(label=_("Destination Network"), required=False)
+    source_network_id = forms.ChoiceField(label=_("Source Network"), required=False, initial='')
+    destination_network_id = forms.ChoiceField(label=_("Destination Network"), required=False, initial='')
     services_list = forms.MultipleChoiceField(label=_("Services"),
                                               required=True,
                                               widget=forms.CheckboxSelectMultiple(),
@@ -58,8 +58,8 @@ class AddServiceChainAction(workflows.Action):
         self.fields['template_id'].choices = template_id_choices
 
         tenant_id = request.user.tenant_id
-        source_network_choices = [('', _("Select a Network"))]
-        destination_network_choices = [('', _("Select a Network"))]
+        source_network_choices = [('', _("Any"))]
+        destination_network_choices = [('', _("Any"))]
         try:
             networks = api.quantum.network_list_for_tenant(request, tenant_id)
         except:
@@ -69,6 +69,7 @@ class AddServiceChainAction(workflows.Action):
         for n in networks:
             source_network_choices.append((n.id, n.name))
             destination_network_choices.append((n.id, n.name))
+
         self.fields['source_network_id'].choices = source_network_choices
         self.fields['destination_network_id'].choices = destination_network_choices
 
