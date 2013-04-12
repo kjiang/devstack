@@ -107,8 +107,8 @@ class FirewallsTable(tables.DataTable):
                          link="horizon:project:firewalls:firewalldetails")
     description = tables.Column("description",
                                 verbose_name=_("Description"))
-    firewall_policy = tables.Column("firewall_policy",
-                                    verbose_name=_("Policy"))
+    firewall_policy_name = tables.Column("firewall_policy_name",
+                                         verbose_name=_("Policy"))
 
     class Meta:
         name = "firewallstable"
