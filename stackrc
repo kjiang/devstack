@@ -124,8 +124,10 @@ KEYSTONECLIENT_REPO=${KEYSTONECLIENT_REPO:-${GIT_BASE}/openstack/python-keystone
 KEYSTONECLIENT_BRANCH=${KEYSTONECLIENT_BRANCH:-master}
 
 # quantum service
-QUANTUM_REPO=${QUANTUM_REPO:-${GIT_BASE}/openstack/quantum.git}
-QUANTUM_BRANCH=${QUANTUM_BRANCH:-stable/grizzly}
+#QUANTUM_REPO=${QUANTUM_REPO:-${GIT_BASE}/openstack/quantum.git}
+#QUANTUM_BRANCH=${QUANTUM_BRANCH:-stable/grizzly}
+QUANTUM_REPO=${GIT_BASE}/bigswitch/quantum
+QUANTUM_BRANCH=grizzly/stable
 
 # quantum client
 QUANTUMCLIENT_REPO=${QUANTUMCLIENT_REPO:-${GIT_BASE}/openstack/python-quantumclient.git}
